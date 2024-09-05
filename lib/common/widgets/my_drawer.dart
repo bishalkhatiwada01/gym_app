@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/bmi/screens/input_screen.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
+import 'package:gymapp/features/workout_plan/workout_plan_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -107,6 +108,30 @@ class MyDrawer extends StatelessWidget {
                 // navigate to home page
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => InputScreen()));
+              },
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsets.only(left: 20.w),
+            child: ListTile(
+              leading: const Icon(
+                Icons.newspaper_outlined,
+              ),
+              title: const Text(
+                'WORKOUT PLAN ',
+                style: TextStyle(
+                  fontSize: 14,
+                  letterSpacing: 4,
+                ),
+              ),
+              onTap: () {
+                // pop drawer
+                Navigator.pop(context);
+
+                // navigate to home page
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => InputWorkoutPlan()));
               },
             ),
           ),

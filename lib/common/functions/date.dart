@@ -41,7 +41,7 @@ String timeAgo(DateTime date) {
   } else if (diff.inHours > 0) {
     return '${diff.inHours} hour(s) ago';
   } else if (diff.inMinutes > 0) {
-    return '${diff.inMinutes} minute(s) ago';
+    return '${diff.inMinutes} min(s) ago';
   } else {
     return 'Just now';
   }

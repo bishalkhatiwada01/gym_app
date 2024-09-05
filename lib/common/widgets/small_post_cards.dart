@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gymapp/common/functions/date.dart';
 import 'package:gymapp/features/posts/data/post_data_model.dart';
 import 'package:gymapp/features/posts/pages/post_detail_page.dart';
 
@@ -52,15 +53,41 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
               ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(12.0)),
-                child: Image.asset(
-                  'assets/no_image.jpg',
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  height: 130.sp,
-                ),
+                child: widget.postData.postImageUrl != null
+                    ? Image.network(
+                        widget.postData.postImageUrl!,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        height: 140.h,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/no_image.jpg',
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            height: 200.h,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'assets/no_image.jpg',
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        height: 200.h,
+                      ),
               ),
               Container(
-                padding: EdgeInsets.all(5.sp),
+                padding: EdgeInsets.symmetric(horizontal: 10.sp),
                 child: Text(
                   widget.postData.postHeadline,
                   maxLines: 1,
@@ -72,9 +99,9 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(5.sp),
+                padding: EdgeInsets.symmetric(horizontal: 10.sp),
                 child: Text(
-                  widget.postData.postCreatedAt.toString(),
+                  timeAgo(DateTime.parse(widget.postData.postCreatedAt)),
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12.sp,

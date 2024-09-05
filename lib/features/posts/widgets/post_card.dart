@@ -43,14 +43,41 @@ class _PostCardState extends ConsumerState<PostCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12.0)),
-                child: Image.asset(
-                  'assets/no_image.jpg',
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  height: 200.h,
-                )),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12.0)),
+              child: widget.postData.postImageUrl != null
+                  ? Image.network(
+                      widget.postData.postImageUrl!,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      height: 200.h,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/no_image.jpg',
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          height: 200.h,
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      'assets/no_image.jpg',
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      height: 200.h,
+                    ),
+            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
               child: Column(
@@ -72,9 +99,22 @@ class _PostCardState extends ConsumerState<PostCard> {
                         ),
                         style: TextStyle(
                             fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
                             color:
                                 Theme.of(context).colorScheme.inversePrimary),
                       ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5.sp),
+                        child: Text(
+                          timeAgo(
+                              DateTime.parse(widget.postData.postCreatedAt)),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ),
+                      Spacer(),
                       IconButton(
                         onPressed: () {
                           EditDeleteLogic.deletePost(

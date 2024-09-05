@@ -20,7 +20,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
   final _formKey = GlobalKey<FormState>();
   final _postService = PostDataSource();
 
-  late String postImageUrl;
+  String? postImageUrl;
   File? image;
   UploadTask? uploadTask;
 
@@ -42,7 +42,6 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
   @override
   void initState() {
     super.initState();
-    // Send the notification...
     _firebaseMessaging.requestPermission();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle notification when app is in foreground
@@ -52,17 +51,38 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
     });
   }
 
+  Future<void> _uploadImage() async {
+    if (image == null) return;
+
+    final imageId = DateTime.now().toString();
+    final ref = FirebaseStorage.instance.ref().child("post_images/$imageId");
+
+    setState(() {
+      uploadTask = ref.putFile(image!);
+    });
+
+    final snapshot = await uploadTask!.whenComplete(() {});
+    final downloadUrl = await snapshot.ref.getDownloadURL();
+
+    setState(() {
+      postImageUrl = downloadUrl;
+      uploadTask = null;
+    });
+  }
+
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
+      if (image != null) {
+        await _uploadImage();
+      }
+
       String result = await _postService.createPost(
         postHeadline: postHeadlineController.text.trim(),
         postContent: postContentController.text.trim(),
-        // postImageUrl: postImageUrl,
-        exercises: exercisesController.text
-            .trim()
-            .split(','), // Assuming comma-separated values
+        postImageUrl: postImageUrl,
+        exercises: exercisesController.text.trim().split(','),
         achievements: achievementsController.text.trim().split(','),
         fitnessGoals: fitnessGoalsController.text.trim().split(','),
       );
@@ -71,14 +91,6 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Post Created')),
       );
-
-      // final ref = FirebaseStorage.instance.ref().child("images/${image!.path}");
-
-      // uploadTask = ref.putFile(image!);
-
-      // final snapshot = await uploadTask!.whenComplete(() => null);
-
-      // final downloadUrl = await snapshot.ref.getDownloadURL();
 
       Navigator.pop(context);
     }
@@ -150,33 +162,47 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                 Align(
                   alignment: Alignment.center,
                   child: InkWell(
-                      onTap: () async {
-                        final picture = await ImagePicker()
-                            .pickImage(source: ImageSource.camera);
-
-                        if (picture != null) {
-                          final imageId = DateTime.now().toString();
-
+                    onTap: () async {
+                      final picture = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (picture != null) {
+                        setState(() {
                           image = File(picture.path);
-                          setState(() {});
-                        }
-                      },
-                      child: image == null
-                          ? const CircleAvatar(
-                              radius: 50,
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 50,
-                                color: Colors.black,
-                              ),
-                            )
-                          : Image.file(
-                              image!,
-                              height: 350.h,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            )),
+                        });
+                      }
+                    },
+                    child: image == null
+                        ? const CircleAvatar(
+                            radius: 50,
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 50,
+                              color: Colors.black,
+                            ),
+                          )
+                        : Image.file(
+                            image!,
+                            height: 350.h,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
                 ),
+                SizedBox(height: 10.h),
+                if (uploadTask != null)
+                  StreamBuilder<TaskSnapshot>(
+                    stream: uploadTask!.snapshotEvents,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final data = snapshot.data!;
+                        double progress =
+                            data.bytesTransferred / data.totalBytes;
+                        return LinearProgressIndicator(value: progress);
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                  ),
                 SizedBox(height: 10.h),
                 MyButton(
                   text: 'Post',

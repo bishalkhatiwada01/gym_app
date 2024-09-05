@@ -13,16 +13,16 @@ class PostDataSource {
   Future<String> createPost({
     required String postHeadline,
     required String postContent,
-    // required String postImageUrl,
     required List<String> exercises,
     required List<String> achievements,
     required List<String> fitnessGoals,
+    String? postImageUrl,
   }) async {
     try {
       await postDb.add({
         'postHeadline': postHeadline,
         'postContent': postContent,
-        // 'postImageUrl': postImageUrl,
+        'postImageUrl': postImageUrl,
         'postCreatedAt': DateTime.now().toIso8601String(),
         'exercises': exercises,
         'achievements': achievements,
@@ -57,7 +57,7 @@ class PostDataSource {
       await postDb.doc(postDataModel.postId).update({
         'postHeadline': postDataModel.postHeadline,
         'postContent': postDataModel.postContent,
-        // 'postImageUrl': postDataModel.postImageUrl,
+        'postImageUrl': postDataModel.postImageUrl,
         'postCreatedAt': DateTime.now().toIso8601String(),
         'exercises': postDataModel.exercises,
         'achievements': postDataModel.achievements,

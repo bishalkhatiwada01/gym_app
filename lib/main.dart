@@ -7,6 +7,7 @@ import 'package:gymapp/common/themes/dark_theme.dart';
 import 'package:gymapp/common/themes/light_theme.dart';
 import 'package:gymapp/common/widgets/my_bottom_navbar.dart';
 import 'package:gymapp/features/auth/services/status_page.dart';
+import 'package:gymapp/features/workout_plan/fitness_form.dart';
 import 'package:gymapp/features/dashboard/home_page.dart';
 import 'package:gymapp/features/dashboard/workout_question_page.dart';
 import 'package:gymapp/features/posts/pages/post_page.dart';
@@ -26,7 +27,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(430, 932),
+      // designSize: const Size(430, 932),
+      designSize: const Size(430, 900),
+
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
@@ -54,7 +57,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const PostPage(),
     const ProfilePage(),
-    const WorkoutQuestionsPage(),
+    WorkoutQuestionsPage(),
   ];
 
   int _selectedIndex = 0;

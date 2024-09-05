@@ -90,7 +90,7 @@ class _EditPostPageState extends ConsumerState<EditPostPage> {
         postId: widget.postDataModel.postId,
         postHeadline: postHeadlineController.text.trim(),
         postContent: postContentController.text.trim(),
-        // postImageUrl: postImageUrl,
+        postImageUrl: postImageUrl,
         postCreatedAt: widget.postDataModel.postCreatedAt,
         exercises: exercisesController.text.trim().split(','),
         achievements: achievementsController.text.trim().split(','),

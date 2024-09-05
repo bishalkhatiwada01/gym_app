@@ -2,7 +2,7 @@ class PostDataModel {
   String postId;
   String postHeadline; // e.g., "My latest progress!"
   String postContent; // e.g., "Here’s a snapshot of my current physique."
-  // String postImageUrl; // URL of the image showing body update
+  String postImageUrl; // URL of the image showing body update
   String postCreatedAt; // Timestamp of the post
   List<String> exercises; // Exercises performed or related to the update
   List<String> achievements; // Achievements or milestones reached
@@ -12,7 +12,7 @@ class PostDataModel {
     required this.postId,
     required this.postHeadline,
     required this.postContent,
-    // required this.postImageUrl,
+    required this.postImageUrl,
     required this.postCreatedAt,
     required this.exercises,
     required this.achievements,
@@ -24,7 +24,7 @@ class PostDataModel {
       postId: json['postId'],
       postHeadline: json['postHeadline'],
       postContent: json['postContent'],
-      // postImageUrl: json['postImageUrl'],
+      postImageUrl: json['postImageUrl'],
       postCreatedAt: json['postCreatedAt'],
       exercises: List<String>.from(json['exercises']),
       achievements: List<String>.from(json['achievements']),
@@ -37,7 +37,7 @@ class PostDataModel {
       'postId': postId,
       'postHeadline': postHeadline,
       'postContent': postContent,
-      // 'postImageUrl': postImageUrl,
+      'postImageUrl': postImageUrl,
       'postCreatedAt': postCreatedAt,
       'exercises': exercises,
       'achievements': achievements,
