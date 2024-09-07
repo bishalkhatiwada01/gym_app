@@ -5,9 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gymapp/features/posts/data/post_data_source.dart';
 import 'package:gymapp/features/posts/pages/create_post_page.dart';
 import 'package:gymapp/features/posts/widgets/post_card.dart';
+import 'package:gymapp/features/profile/model/user_model.dart';
 
 class PostPage extends ConsumerStatefulWidget {
-  const PostPage({super.key});
+  PostPage({
+    super.key,
+  });
 
   @override
   ConsumerState<PostPage> createState() => _PostPageState();
@@ -19,7 +22,9 @@ class _PostPageState extends ConsumerState<PostPage> {
     final postData = ref.watch(postProvider);
 
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 230, 240, 255),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 230, 240, 255),
         title: Text("POSTS"),
         centerTitle: true,
       ),

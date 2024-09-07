@@ -12,6 +12,7 @@ import 'package:gymapp/features/dashboard/home_page.dart';
 import 'package:gymapp/features/dashboard/workout_question_page.dart';
 import 'package:gymapp/features/posts/pages/post_page.dart';
 import 'package:gymapp/features/profile/pages/profile_page.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,14 +34,31 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Gym App',
-          theme: lightMode,
-          darkTheme: darkMode,
-          home: const StatusPage(),
+        return SafeArea(
+          child: KhaltiScope(
+            publicKey: 'test_public_key_49536e9f1a424b6fa5c79d0b85b765f6',
+            enabledDebugging: true,
+            builder: (context, navigatorKey) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Charity Management App',
+                theme: lightMode,
+                darkTheme: darkMode,
+                home: child,
+                supportedLocales: const [
+                  Locale('en', 'US'),
+                  Locale('ne', 'NP'),
+                ],
+                localizationsDelegates: const [
+                  KhaltiLocalizations.delegate,
+                ],
+                navigatorKey: navigatorKey,
+              );
+            },
+          ),
         );
       },
+      child: StatusPage(),
     );
   }
 }
@@ -55,7 +73,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final _pages = [
     const HomePage(),
-    const PostPage(),
+    PostPage(),
     const ProfilePage(),
     WorkoutQuestionsPage(),
   ];

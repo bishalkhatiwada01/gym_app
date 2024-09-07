@@ -47,7 +47,7 @@ class _EditPostPageState extends ConsumerState<EditPostPage> {
         text: widget.postDataModel.achievements.join(','));
     fitnessGoalsController = TextEditingController(
         text: widget.postDataModel.fitnessGoals.join(','));
-    // postImageUrl = widget.postDataModel.postImageUrl;
+    postImageUrl = widget.postDataModel.postImageUrl;
   }
 
   String? _validateTextField(String? value) {
@@ -57,30 +57,30 @@ class _EditPostPageState extends ConsumerState<EditPostPage> {
     return null;
   }
 
-  // Future<void> _updateImage() async {
-  //   final picker = ImagePicker();
-  //   final postImage = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> _updateImage() async {
+    final picker = ImagePicker();
+    final postImage = await picker.pickImage(source: ImageSource.gallery);
 
-  //   if (postImage != null) {
-  //     // Delete the old image from Firebase Storage
-  //     if (postImageUrl.isNotEmpty) {
-  //       Reference oldImageRef =
-  //           FirebaseStorage.instance.refFromURL(postImageUrl);
-  //       await oldImageRef.delete();
-  //     }
+    if (postImage != null) {
+      // Delete the old image from Firebase Storage
+      if (postImageUrl.isNotEmpty) {
+        Reference oldImageRef =
+            FirebaseStorage.instance.refFromURL(postImageUrl);
+        await oldImageRef.delete();
+      }
 
-  //     // Upload the new image to Firebase Storage
-  //     final imageId = DateTime.now().toString();
-  //     final ref = FirebaseStorage.instance.ref().child('postImages/$imageId');
-  //     await ref.putFile(File(postImage.path));
-  //     final url = await ref.getDownloadURL();
+      // Upload the new image to Firebase Storage
+      final imageId = DateTime.now().toString();
+      final ref = FirebaseStorage.instance.ref().child('postImages/$imageId');
+      await ref.putFile(File(postImage.path));
+      final url = await ref.getDownloadURL();
 
-  //     setState(() {
-  //       selectedImage = File(postImage.path);
-  //       postImageUrl = url;
-  //     });
-  //   }
-  // }
+      setState(() {
+        selectedImage = File(postImage.path);
+        postImageUrl = url;
+      });
+    }
+  }
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -172,31 +172,31 @@ class _EditPostPageState extends ConsumerState<EditPostPage> {
                   obscureText: false,
                 ),
                 SizedBox(height: 10.h),
-                // Container(
-                //   decoration: BoxDecoration(
-                //     border: Border.all(
-                //       width: 2.h,
-                //       color: Theme.of(context).colorScheme.inversePrimary,
-                //     ),
-                //   ),
-                //   child: selectedImage == null
-                //       ? Image.network(
-                //           postImageUrl,
-                //           height: 200.0,
-                //           width: double.infinity,
-                //           fit: BoxFit.cover,
-                //         )
-                //       : Image.file(
-                //           selectedImage!,
-                //           height: 200.0,
-                //           width: double.infinity,
-                //           fit: BoxFit.cover,
-                //         ),
-                // ),
-                // IconButton(
-                // onPressed: _updateImage,
-                //   icon: const Icon(Icons.add_a_photo),
-                // ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 2.h,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                  ),
+                  child: selectedImage == null
+                      ? Image.network(
+                          postImageUrl,
+                          height: 200.0,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.file(
+                          selectedImage!,
+                          height: 200.0,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+                IconButton(
+                  onPressed: _updateImage,
+                  icon: const Icon(Icons.add_a_photo),
+                ),
                 SizedBox(height: 10.h),
                 MyButton(
                   text: 'Update',

@@ -35,7 +35,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     final postData = ref.watch(postProvider);
 
     return Scaffold(
+        backgroundColor: Color.fromARGB(255, 230, 240, 255),
         appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 230, 240, 255),
           title: Text("Home Page"),
           centerTitle: true,
         ),
@@ -122,7 +124,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ],
                 ),
                 SizedBox(
-                  height: 220.h,
+                  height: 310.6.h,
                   width: double.infinity,
                   child: postData.when(
                     data: (data) {
@@ -130,7 +132,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return SizedBox(
-                            width: 190.w,
+                            width: 350.w,
                             child: SmallPostCard(
                               postData: data[index],
                             ),
@@ -160,32 +162,32 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 220.h,
-                  width: double.infinity,
-                  child: postData.when(
-                    data: (data) {
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return SizedBox(
-                            width: 190.w,
-                            child: SmallPostCard(
-                              postData: data[index],
-                            ),
-                          );
-                        },
-                        itemCount: data.length,
-                      );
-                    },
-                    error: (error, stack) => const Center(
-                      child: Text('Error'),
-                    ),
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
+                // SizedBox(
+                //   height: 220.h,
+                //   width: double.infinity,
+                //   child: postData.when(
+                //     data: (data) {
+                //       return ListView.builder(
+                //         scrollDirection: Axis.horizontal,
+                //         itemBuilder: (context, index) {
+                //           return SizedBox(
+                //             width: 190.w,
+                //             child: SmallPostCard(
+                //               postData: data[index],
+                //             ),
+                //           );
+                //         },
+                //         itemCount: data.length,
+                //       );
+                //     },
+                //     error: (error, stack) => const Center(
+                //       child: Text('Error'),
+                //     ),
+                //     loading: () => const Center(
+                //       child: CircularProgressIndicator(),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: 10.h),
                 SizedBox(height: 15.h),
               ],

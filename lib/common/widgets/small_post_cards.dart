@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,7 +33,8 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
         );
       },
       child: Card(
-        elevation: 4.0,
+        color: Color.fromARGB(255, 255, 255, 255), // White card
+        elevation: 0.0,
         margin: const EdgeInsets.all(10.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -40,25 +43,60 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ClipRRect(
-              //   borderRadius:
-              //       const BorderRadius.vertical(top: Radius.circular(12.0)),
-              //   child: Image.network(
-              //     widget.postData.postImageUrl!,
-              //     height: 108.sp,
-              //     width: double.infinity,
-              //     fit: BoxFit.cover,
-              //   ),
-              // ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 28.r,
+                    ),
+                    SizedBox(width: 15.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.postData.postHeadline,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "Posted in ${timeAgo(DateTime.parse(widget.postData.postCreatedAt))}",
+                            style: TextStyle(
+                              fontSize:
+                                  14.sp, // Slightly larger font size for time
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                height: 43.h,
+                padding: EdgeInsets.symmetric(horizontal: 20.sp),
+                child: Text(
+                  widget.postData.postContent,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                 child: widget.postData.postImageUrl != null
                     ? Image.network(
-                        widget.postData.postImageUrl!,
-                        width: double.infinity,
+                        widget.postData.postImageUrl,
+                        width: 400.w,
                         fit: BoxFit.cover,
-                        height: 140.h,
+                        height: 180.h,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Center(
@@ -71,11 +109,8 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
                           );
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/no_image.jpg',
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            height: 200.h,
+                          return Text(
+                            'Error!!!',
                           );
                         },
                       )
@@ -85,29 +120,6 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
                         fit: BoxFit.cover,
                         height: 200.h,
                       ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.sp),
-                child: Text(
-                  widget.postData.postHeadline,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.sp),
-                child: Text(
-                  timeAgo(DateTime.parse(widget.postData.postCreatedAt)),
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
             ],
           ),

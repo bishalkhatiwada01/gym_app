@@ -1,28 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gymapp/features/profile/model/user_model.dart';
 
-final userProvider =
-    FutureProvider.autoDispose<DocumentSnapshot<Map<String, dynamic>>>(
-        (ref) async {
-  final getUserService = getUser();
-  final userData = await getUserService.getUserDetails();
-  return userData;
+final userProvider = FutureProvider.autoDispose<UserModel>((ref) async {
+  final userService = UserService();
+  return userService.getUserDetails();
 });
 
-class getUser {
-  final currentUser = FirebaseAuth.instance.currentUser;
+class UserService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDetails() async {
-    print("currentUser: ${currentUser}");
-    if (currentUser != null) {
-      final data = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser?.uid)
-          .get();
-      return data;
+  Future<UserModel> getUserDetails() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc = await _firestore.collection('users').doc(user.uid).get();
+      return UserModel.fromDocument(doc);
     } else {
-      // Handle the case when currentUser is null
       throw Exception('No current user');
     }
   }

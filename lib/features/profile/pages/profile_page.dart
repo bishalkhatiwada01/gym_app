@@ -1,12 +1,16 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
 import 'package:gymapp/features/profile/data/user_service.dart';
 import 'package:gymapp/features/profile/widgets/my_card_profile.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -16,6 +20,10 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
+  File? _profileImage;
+  String? _profileImageUrl;
+  String? _userName;
+
   Future<String> userSignout() async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -25,13 +33,98 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     }
   }
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      setState(() {
+        _profileImage = imageFile;
+      });
+      await _uploadImage(imageFile);
+    }
+  }
+
+  Future<void> _uploadImage(File imageFile) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) return;
+
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child("profile_images/$userId/${DateTime.now().toString()}");
+
+    try {
+      final uploadTask = ref.putFile(imageFile);
+      final snapshot = await uploadTask.whenComplete(() {});
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      setState(() {
+        _profileImageUrl = downloadUrl;
+      });
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'profileImageUrl': downloadUrl,
+      });
+    } catch (e) {
+      // Handle errors
+      print("Error uploading image: $e");
+    }
+  }
+
+  Future<void> _updateUserName() async {
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        final nameController = TextEditingController();
+        return AlertDialog(
+          title: const Text('Change Name'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(hintText: "Enter new name"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(nameController.text);
+              },
+              child: const Text('OK'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newName != null && newName.isNotEmpty) {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'name': newName,
+        });
+        setState(() {
+          _userName = newName;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final userDataAsyncValue = ref.watch(userProvider);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: const Color.fromARGB(255, 230, 240, 255),
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 230, 240, 255),
         title: Text(
           'PROFILE',
           style: TextStyle(
@@ -39,75 +132,88 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               letterSpacing: 4),
         ),
         elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         iconTheme:
             IconThemeData(color: Theme.of(context).colorScheme.inversePrimary),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'change_picture') {
+                _pickImage();
+              } else if (value == 'change_name') {
+                _updateUserName();
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'change_picture',
+                  child: Text('Change Profile Picture'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'change_name',
+                  child: Text('Change Name'),
+                ),
+              ];
+            },
+            icon: Icon(Icons.more_vert, size: 24.sp),
+          ),
+        ],
       ),
       body: userDataAsyncValue.when(
         data: (userData) {
-          final Map<String, dynamic> user = userData.data()!;
           return SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  height: 25.h,
-                ),
+                SizedBox(height: 25.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: const CircleAvatar(
-                        maxRadius: 65,
-                        backgroundImage: AssetImage("assets/6195145.jpg"),
-                      ),
-                    ),
+                    _profileImage == null
+                        ? CircleAvatar(
+                            maxRadius: 65,
+                            backgroundImage: _profileImageUrl != null
+                                ? NetworkImage(_profileImageUrl!)
+                                : const AssetImage("assets/6195145.jpg"),
+                          )
+                        : CircleAvatar(
+                            maxRadius: 65,
+                            backgroundImage: FileImage(_profileImage!),
+                          ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
+                Text(
+                  userData.name ?? 'No name provided',
+                  style:
+                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 10),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
                       backgroundImage: AssetImage("assets/download.png"),
                     ),
-                    SizedBox(
-                      width: 15,
-                    ),
+                    SizedBox(width: 15),
                     CircleAvatar(
                       backgroundImage:
                           AssetImage("assets/GooglePlus-logo-red.png"),
                     ),
-                    SizedBox(
-                      width: 15,
-                    ),
+                    SizedBox(width: 15),
                     CircleAvatar(
                       backgroundImage: AssetImage(
                           "assets/1_Twitter-new-icon-mobile-app.jpg"),
                     ),
-                    SizedBox(
-                      width: 15,
-                    ),
+                    SizedBox(width: 15),
                     CircleAvatar(
                       backgroundImage:
                           AssetImage("assets/600px-LinkedIn_logo_initials.png"),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      user['email'],
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
                 const SizedBox(height: 16),
                 Container(
                   margin: const EdgeInsets.only(left: 12, right: 12),
@@ -129,7 +235,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           color: Colors.black54,
                         ),
                       ),
-                      SizedBox(height: 6.h),
                       SizedBox(height: 6.h),
                       MyCardProfile(
                         onPressed: () {
@@ -164,9 +269,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         ),
                       ),
                       SizedBox(height: 6.h),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                     ],
                   ),
                 )
@@ -175,7 +278,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           );
         },
         error: (error, stackTrace) {
-          return null;
+          return Center(child: Text('Error: $error'));
         },
         loading: () => const Center(
           child: CircularProgressIndicator(),
