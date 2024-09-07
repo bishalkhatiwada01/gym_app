@@ -68,7 +68,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                       ),
                       userDataAsyncValue.when(
                         data: (userData) {
-                          final username = userData.username ?? 'Unknown User';
+                          final username = userData.username;
                           return TextButton(
                             child: Text(
                               'Pay',
@@ -86,7 +86,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                               } else {
                                 // Handle empty amount
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                     content: Text('Please enter an amount.'),
                                   ),
                                 );

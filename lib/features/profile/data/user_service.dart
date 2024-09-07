@@ -8,10 +8,17 @@ final userProvider = FutureProvider.autoDispose<UserModel>((ref) async {
   return userService.getUserDetails();
 });
 
+final userByIdProvider =
+    FutureProvider.family.autoDispose<UserModel, String>((ref, userId) async {
+  final userService = UserService();
+  return userService.getUserById(userId);
+});
+
 class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Fetch details of the currently logged-in user
   Future<UserModel> getUserDetails() async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -19,6 +26,21 @@ class UserService {
       return UserModel.fromDocument(doc);
     } else {
       throw Exception('No current user');
+    }
+  }
+
+  // Fetch details of any user by their userId
+  Future<UserModel> getUserById(String userId) async {
+    try {
+      // Fetch user data from Firestore by userId
+      final doc = await _firestore.collection('users').doc(userId).get();
+      if (doc.exists) {
+        return UserModel.fromDocument(doc);
+      } else {
+        throw Exception('User not found');
+      }
+    } catch (e) {
+      throw Exception('Error fetching user data: $e');
     }
   }
 }

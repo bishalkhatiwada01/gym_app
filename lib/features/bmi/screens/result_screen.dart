@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gymapp/features/dashboard/workout_question_page.dart';
 
 class ResultScreen extends StatelessWidget {
   final double bmi;
   final double height;
 
-  ResultScreen({required this.bmi, required this.height});
+  const ResultScreen({super.key, required this.bmi, required this.height});
 
   // Function to determine BMI classification text
   String getResultText() {
@@ -47,12 +46,12 @@ class ResultScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100], // Background color for the screen
       appBar: AppBar(
-        title: Text('Your BMI Result'),
+        title: const Text('Your BMI Result'),
         backgroundColor: Colors.transparent, // App bar color
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -64,7 +63,7 @@ class ResultScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
                       Text(
@@ -75,18 +74,18 @@ class ResultScreen extends StatelessWidget {
                           color: resultColor,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Body Mass Index',
                         style: TextStyle(fontSize: 18.0),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       // Display BMI classification
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           color: resultColor.withOpacity(0.2),
                         ),
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 20.0),
                         child: Text(
                           resultText,
@@ -97,14 +96,14 @@ class ResultScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
-              Divider(),
-              SizedBox(height: 10.0),
-              Text(
+              const SizedBox(height: 20.0),
+              const Divider(),
+              const SizedBox(height: 10.0),
+              const Text(
                 'Analysis',
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               // Display height and suggested weight range
               Card(
                 elevation: 5,
@@ -112,29 +111,30 @@ class ResultScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Height (cm)', style: TextStyle(fontSize: 16.0)),
-                          Text(height.toStringAsFixed(1),
+                          const Text('Height (cm)',
                               style: TextStyle(fontSize: 16.0)),
+                          Text(height.toStringAsFixed(1),
+                              style: const TextStyle(fontSize: 16.0)),
                         ],
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Suggested weight (kg)',
+                          const Text('Suggested weight (kg)',
                               style: TextStyle(fontSize: 16.0)),
                           Text(
                               '${minWeight.toStringAsFixed(1)} ~ ${maxWeight.toStringAsFixed(1)}',
-                              style: TextStyle(fontSize: 16.0)),
+                              style: const TextStyle(fontSize: 16.0)),
                         ],
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                     ],
                   ),
                 ),

@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,7 @@ import 'package:gymapp/features/posts/data/post_data_model.dart';
 import 'package:gymapp/features/posts/data/post_data_source.dart';
 import 'package:gymapp/features/posts/pages/edit_post_page.dart';
 import 'package:gymapp/features/posts/widgets/edit_delete_logic.dart';
+import 'package:gymapp/features/profile/data/user_service.dart';
 
 class PostDetailsPage extends ConsumerStatefulWidget {
   final PostDataModel postData;
@@ -23,6 +25,7 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userData = ref.watch(userProvider);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -49,8 +52,6 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                 });
                 ref.refresh(postProvider);
               } else if (value == 'edit') {
-                // Implement your edit logic here
-                // For example, you might navigate to an edit page
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -62,16 +63,29 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
               }
             },
             itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem<String>(
-                  value: 'delete',
-                  child: Text('Delete Post'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'edit',
-                  child: Text('Edit Post'),
-                ),
-              ];
+              final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+              final postUserId = widget.postData.userId;
+
+              // Conditional PopupMenuItems
+              List<PopupMenuEntry<String>> menuItems = [];
+
+              if (currentUserId == postUserId) {
+                // Show both "Edit" and "Delete" only if current user is the post owner
+                menuItems.add(
+                  const PopupMenuItem<String>(
+                    value: 'edit',
+                    child: Text('Edit Post'),
+                  ),
+                );
+                menuItems.add(
+                  const PopupMenuItem<String>(
+                    value: 'delete',
+                    child: Text('Delete Post'),
+                  ),
+                );
+              }
+
+              return menuItems;
             },
             icon: Icon(Icons.more_vert, size: 24.sp),
           ),
@@ -91,20 +105,39 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 28.r,
+                          userData.when(
+                            data: (data) {
+                              return CircleAvatar(
+                                radius: 20.r,
+                                backgroundImage:
+                                    NetworkImage(data.profileImageUrl ?? ''),
+                              );
+                            },
+                            error: (error, stackTrace) {
+                              return Text(error.toString());
+                            },
+                            loading: () => const CircularProgressIndicator(),
                           ),
                           SizedBox(width: 15.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  widget.postData.postHeadline,
-                                  style: TextStyle(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                userData.when(
+                                  data: (data) {
+                                    return Text(
+                                      data.name ?? 'Enter Name',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22.sp,
+                                      ),
+                                    );
+                                  },
+                                  error: (error, stackTrace) {
+                                    return Text(error.toString());
+                                  },
+                                  loading: () =>
+                                      const CircularProgressIndicator(),
                                 ),
                                 Text(
                                   "Posted in ${timeAgo(DateTime.parse(widget.postData.postCreatedAt))}",

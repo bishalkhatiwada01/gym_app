@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gymapp/features/bmi/screens/input_screen.dart';
-import 'package:gymapp/features/dashboard/home_page.dart';
 import 'package:gymapp/features/dashboard/workout_question_page.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -43,7 +41,7 @@ Here are some questions to tailor
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => WorkoutQuestionsPage()));
+                      builder: (context) => const WorkoutQuestionsPage()));
                 },
                 child: Container(
                   decoration: BoxDecoration(

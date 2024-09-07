@@ -16,10 +16,15 @@ class PostDataSource {
     required List<String> exercises,
     required List<String> achievements,
     required List<String> fitnessGoals,
+    required String userId, // Add userId
     String? postImageUrl,
   }) async {
     try {
-      await postDb.add({
+      final postId = postDb.doc().id; // Generate postId
+
+      await postDb.doc(postId).set({
+        'postId': postId, // Include postId
+        'userId': userId, // Include userId
         'postHeadline': postHeadline,
         'postContent': postContent,
         'postImageUrl': postImageUrl,

@@ -124,7 +124,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ],
                 ),
                 SizedBox(
-                  height: 310.6.h,
+                  height: 300.6.h,
                   width: double.infinity,
                   child: postData.when(
                     data: (data) {

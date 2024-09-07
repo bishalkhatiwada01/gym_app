@@ -95,6 +95,7 @@ class _EditPostPageState extends ConsumerState<EditPostPage> {
         exercises: exercisesController.text.trim().split(','),
         achievements: achievementsController.text.trim().split(','),
         fitnessGoals: fitnessGoalsController.text.trim().split(','),
+        userId: widget.postDataModel.userId,
       );
 
       await _postService.updatePost(postDataModel: updatedPostData);

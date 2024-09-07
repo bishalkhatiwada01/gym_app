@@ -6,6 +6,7 @@ import 'package:gymapp/common/widgets/my_textfield.dart';
 import 'package:gymapp/features/auth/pages/forgot_password_page.dart';
 import 'package:gymapp/features/auth/pages/sign_up_page.dart';
 import 'package:gymapp/features/auth/services/auth_service.dart';
+import 'package:gymapp/features/auth/services/status_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -29,14 +30,15 @@ class _LoginPageState extends State<LoginPage> {
       emailController.text,
       passwordController.text,
     );
-  }
 
-  bool _isPasswordVisible = false;
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => StatusPage()));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(25.sp),
@@ -115,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RegisterPage()));
+                                  builder: (context) => const RegisterPage()));
                         },
                         child: const Text('Register Here',
                             style: TextStyle(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,6 @@ class CreatePostPage extends ConsumerStatefulWidget {
 
 class _CreatePostPageState extends ConsumerState<CreatePostPage> {
   final _formKey = GlobalKey<FormState>();
-  final _postService = PostDataSource();
 
   String? postImageUrl;
   File? image;
@@ -74,25 +74,45 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
+      // Upload image if selected
       if (image != null) {
         await _uploadImage();
       }
 
-      String result = await _postService.createPost(
-        postHeadline: postHeadlineController.text.trim(),
-        postContent: postContentController.text.trim(),
+      // Get current userId
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+
+      if (userId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User not logged in')),
+        );
+        return;
+      }
+
+      // Call the createPost method to save post data to Firestore
+      final postDataSource = PostDataSource();
+      final result = await postDataSource.createPost(
+        postHeadline: postHeadlineController.text,
+        postContent: postContentController.text,
+        exercises: exercisesController.text.split(','),
+        achievements: achievementsController.text.split(','),
+        fitnessGoals: fitnessGoalsController.text.split(','),
+        userId: userId, // Pass userId
         postImageUrl: postImageUrl,
-        exercises: exercisesController.text.trim().split(','),
-        achievements: achievementsController.text.trim().split(','),
-        fitnessGoals: fitnessGoalsController.text.trim().split(','),
-      );
-      ref.refresh(postProvider);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Post Created')),
       );
 
-      Navigator.pop(context);
+      if (result == 'Post Created') {
+        ref.refresh(postProvider);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Post Created')),
+        );
+        Navigator.pop(context);
+      } else {
+        // Handle errors if post creation fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result)),
+        );
+      }
     }
   }
 

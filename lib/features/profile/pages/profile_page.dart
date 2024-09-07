@@ -138,18 +138,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
-              if (value == 'change_picture') {
-                _pickImage();
-              } else if (value == 'change_name') {
+              if (value == 'change_name') {
                 _updateUserName();
               }
             },
             itemBuilder: (BuildContext context) {
               return [
-                const PopupMenuItem<String>(
-                  value: 'change_picture',
-                  child: Text('Change Profile Picture'),
-                ),
                 const PopupMenuItem<String>(
                   value: 'change_name',
                   child: Text('Change Name'),
@@ -166,28 +160,25 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             child: Column(
               children: [
                 SizedBox(height: 25.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _profileImage == null
-                        ? CircleAvatar(
-                            maxRadius: 65,
-                            backgroundImage: _profileImageUrl != null
-                                ? NetworkImage(_profileImageUrl!)
-                                : const AssetImage("assets/6195145.jpg"),
-                          )
-                        : CircleAvatar(
-                            maxRadius: 65,
-                            backgroundImage: FileImage(_profileImage!),
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: userData.profileImageUrl == null
+                      ? const CircleAvatar(
+                          radius: 60,
+                          backgroundImage: AssetImage("assets/user.png"),
+                        )
+                      : CircleAvatar(
+                          radius: 60,
+                          backgroundImage: NetworkImage(
+                            userData.profileImageUrl!,
                           ),
-                  ],
+                        ),
                 ),
-                const SizedBox(height: 10),
                 SizedBox(height: 10.h),
                 Text(
                   userData.name ?? 'No name provided',
                   style:
-                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 const Row(

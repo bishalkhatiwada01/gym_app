@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gymapp/features/dashboard/physical_condition_page.dart';
 
 class WorkoutQuestionsPage extends StatefulWidget {
   const WorkoutQuestionsPage({super.key});
@@ -24,7 +23,6 @@ class _WorkoutQuestionsPageState extends State<WorkoutQuestionsPage> {
       _selectedGoal = goal;
       controller.text = goal;
       // You can also save the selected goal to a database or use it in your app logic
-      print('Selected goal: ${controller.text}');
     });
   }
 
@@ -108,7 +106,7 @@ class _WorkoutQuestionsPageState extends State<WorkoutQuestionsPage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Padding(

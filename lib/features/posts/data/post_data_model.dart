@@ -8,6 +8,8 @@ class PostDataModel {
   List<String> achievements; // Achievements or milestones reached
   List<String> fitnessGoals; // Goals that this post relates to
 
+  String userId;
+
   PostDataModel({
     required this.postId,
     required this.postHeadline,
@@ -17,6 +19,7 @@ class PostDataModel {
     required this.exercises,
     required this.achievements,
     required this.fitnessGoals,
+    required this.userId,
   });
 
   factory PostDataModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +32,7 @@ class PostDataModel {
       exercises: List<String>.from(json['exercises']),
       achievements: List<String>.from(json['achievements']),
       fitnessGoals: List<String>.from(json['fitnessGoals']),
+      userId: json['userId'],
     );
   }
 
@@ -42,6 +46,7 @@ class PostDataModel {
       'exercises': exercises,
       'achievements': achievements,
       'fitnessGoals': fitnessGoals,
+      'userId': userId,
     };
   }
 }

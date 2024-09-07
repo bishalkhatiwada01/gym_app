@@ -1,72 +1,94 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/common/functions/date.dart';
 import 'package:gymapp/features/posts/data/post_data_model.dart';
 import 'package:gymapp/features/posts/pages/post_detail_page.dart';
+import 'package:gymapp/features/profile/data/user_service.dart';
+import 'package:gymapp/features/profile/model/user_model.dart';
 
-class SmallPostCard extends ConsumerStatefulWidget {
+// Create a provider to fetch user data based on userId from postData
+final userByIdProvider =
+    FutureProvider.family<UserModel, String>((ref, userId) {
+  return UserService().getUserById(userId); // Fetch user by their userId
+});
+
+class SmallPostCard extends ConsumerWidget {
   final PostDataModel postData;
 
   const SmallPostCard({
     required this.postData,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
-  ConsumerState<SmallPostCard> createState() => _SmallPostCardState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userById =
+        ref.watch(userByIdProvider(postData.userId)); // Fetch user by userId
 
-class _SmallPostCardState extends ConsumerState<SmallPostCard> {
-  @override
-  Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => PostDetailsPage(
-              postData: widget.postData,
+              postData: postData,
             ),
           ),
         );
       },
       child: Card(
-        color: Color.fromARGB(255, 255, 255, 255), // White card
+        color: Colors.white,
         elevation: 0.0,
         margin: const EdgeInsets.all(10.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: SizedBox(
+          width: 300, // Fixed width for the card
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+                padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 28.r,
+                    userById.when(
+                      data: (userData) {
+                        return CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(
+                            userData.profileImageUrl ?? '',
+                          ),
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        return const Icon(Icons.error);
+                      },
+                      loading: () => const CircularProgressIndicator(),
                     ),
-                    SizedBox(width: 15.w),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.postData.postHeadline,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          userById.when(
+                            data: (userData) {
+                              return Text(
+                                userData.name ?? 'User Name',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              );
+                            },
+                            error: (error, stackTrace) {
+                              return const Text('Error loading name');
+                            },
+                            loading: () => const Text('Loading...'),
                           ),
                           Text(
-                            "Posted in ${timeAgo(DateTime.parse(widget.postData.postCreatedAt))}",
-                            style: TextStyle(
-                              fontSize:
-                                  14.sp, // Slightly larger font size for time
+                            "Posted ${timeAgo(DateTime.parse(postData.postCreatedAt))}",
+                            style: const TextStyle(
+                              fontSize: 12,
                               color: Colors.grey,
                             ),
                           ),
@@ -77,40 +99,38 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
                 ),
               ),
               Container(
-                height: 43.h,
-                padding: EdgeInsets.symmetric(horizontal: 20.sp),
+                height: 40,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text(
-                  widget.postData.postContent,
+                  postData.postContent,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 15.sp,
+                  style: const TextStyle(
+                    fontSize: 14,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
               ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                child: widget.postData.postImageUrl != null
+                child: postData.postImageUrl.isNotEmpty
                     ? Image.network(
-                        widget.postData.postImageUrl,
-                        width: 400.w,
+                        postData.postImageUrl,
+                        width: double.infinity,
                         fit: BoxFit.cover,
-                        height: 180.h,
+                        height: 150,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return Text(
-                            'Error!!!',
+                          return const Center(
+                            child: Text(
+                              'Error loading image!',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           );
                         },
                       )
@@ -118,7 +138,7 @@ class _SmallPostCardState extends ConsumerState<SmallPostCard> {
                         'assets/no_image.jpg',
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        height: 200.h,
+                        height: 150,
                       ),
               ),
             ],
