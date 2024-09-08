@@ -29,6 +29,7 @@ class _MyPasswordTextFieldState extends State<MyPasswordTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      cursorColor: Theme.of(context).colorScheme.inversePrimary,
       controller: widget.controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(

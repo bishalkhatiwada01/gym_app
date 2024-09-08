@@ -117,6 +117,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     }
   }
 
+  Future<void> _refreshData() async {
+    // This will refresh the data by invalidating and refetching the userProvider
+    ref.refresh(userProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final userDataAsyncValue = ref.watch(userProvider);
@@ -154,125 +159,129 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           ),
         ],
       ),
-      body: userDataAsyncValue.when(
-        data: (userData) {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 25.h),
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: userData.profileImageUrl == null
-                      ? const CircleAvatar(
-                          radius: 60,
-                          backgroundImage: AssetImage("assets/user.png"),
-                        )
-                      : CircleAvatar(
-                          radius: 60,
-                          backgroundImage: NetworkImage(
-                            userData.profileImageUrl!,
+      body: RefreshIndicator(
+        onRefresh: _refreshData, // Added refresh function
+        child: userDataAsyncValue.when(
+          data: (userData) {
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  SizedBox(height: 25.h),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: userData.profileImageUrl == null
+                        ? const CircleAvatar(
+                            radius: 60,
+                            backgroundImage: AssetImage("assets/user.png"),
+                          )
+                        : CircleAvatar(
+                            radius: 60,
+                            backgroundImage: NetworkImage(
+                              userData.profileImageUrl!,
+                            ),
                           ),
-                        ),
-                ),
-                SizedBox(height: 10.h),
-                Text(
-                  userData.name ?? 'No name provided',
-                  style:
-                      TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage("assets/download.png"),
-                    ),
-                    SizedBox(width: 15),
-                    CircleAvatar(
-                      backgroundImage:
-                          AssetImage("assets/GooglePlus-logo-red.png"),
-                    ),
-                    SizedBox(width: 15),
-                    CircleAvatar(
-                      backgroundImage: AssetImage(
-                          "assets/1_Twitter-new-icon-mobile-app.jpg"),
-                    ),
-                    SizedBox(width: 15),
-                    CircleAvatar(
-                      backgroundImage:
-                          AssetImage("assets/600px-LinkedIn_logo_initials.png"),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                const SizedBox(height: 16),
-                Container(
-                  margin: const EdgeInsets.only(left: 12, right: 12),
-                  child: Column(
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    userData.name ?? 'No name provided',
+                    style:
+                        TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 6.h),
-                      MyCardProfile(
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => DonationHistoryPage(),
-                          //   ),
-                          // );
-                        },
-                        title: 'Payment History',
-                        leading: const Icon(
-                          Icons.history_edu,
-                          color: Colors.black54,
-                        ),
+                      CircleAvatar(
+                        backgroundImage: AssetImage("assets/download.png"),
                       ),
-                      SizedBox(height: 6.h),
-                      MyCardProfile(
-                        onPressed: () {
-                          Share.share('https://gymapp.com');
-                        },
-                        title: 'Invite a Friend',
-                        leading: const Icon(
-                          Icons.add_reaction_sharp,
-                          color: Colors.black54,
-                        ),
+                      SizedBox(width: 15),
+                      CircleAvatar(
+                        backgroundImage:
+                            AssetImage("assets/GooglePlus-logo-red.png"),
                       ),
-                      SizedBox(height: 6.h),
-                      MyCardProfile(
-                        onPressed: () async {
-                          String result = await userSignout();
-                          if (result == "Success") {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginPage()),
-                            );
-                          } else {
-                            if (kDebugMode) {
-                              print('Logout Failed');
-                            }
-                          }
-                        },
-                        title: 'Logout',
-                        leading: const Icon(
-                          Icons.logout,
-                          color: Colors.black54,
-                        ),
+                      SizedBox(width: 15),
+                      CircleAvatar(
+                        backgroundImage: AssetImage(
+                            "assets/1_Twitter-new-icon-mobile-app.jpg"),
                       ),
-                      SizedBox(height: 6.h),
-                      const SizedBox(height: 5),
+                      SizedBox(width: 15),
+                      CircleAvatar(
+                        backgroundImage: AssetImage(
+                            "assets/600px-LinkedIn_logo_initials.png"),
+                      ),
                     ],
                   ),
-                )
-              ],
-            ),
-          );
-        },
-        error: (error, stackTrace) {
-          return Center(child: Text('Error: $error'));
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
+                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
+                  Container(
+                    margin: const EdgeInsets.only(left: 12, right: 12),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 6.h),
+                        MyCardProfile(
+                          onPressed: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => DonationHistoryPage(),
+                            //   ),
+                            // );
+                          },
+                          title: 'Payment History',
+                          leading: const Icon(
+                            Icons.history_edu,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        MyCardProfile(
+                          onPressed: () {
+                            Share.share('https://gymapp.com');
+                          },
+                          title: 'Invite a Friend',
+                          leading: const Icon(
+                            Icons.add_reaction_sharp,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        MyCardProfile(
+                          onPressed: () async {
+                            String result = await userSignout();
+                            if (result == "Success") {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginPage()),
+                              );
+                            } else {
+                              if (kDebugMode) {
+                                print('Logout Failed');
+                              }
+                            }
+                          },
+                          title: 'Logout',
+                          leading: const Icon(
+                            Icons.logout,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        const SizedBox(height: 5),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+          error: (error, stackTrace) {
+            return Center(child: Text('Error: $error'));
+          },
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       ),
     );

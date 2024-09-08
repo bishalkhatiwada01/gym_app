@@ -9,9 +9,8 @@ final userProvider = FutureProvider.autoDispose<UserModel>((ref) async {
 });
 
 final userByIdProvider =
-    FutureProvider.family.autoDispose<UserModel, String>((ref, userId) async {
-  final userService = UserService();
-  return userService.getUserById(userId);
+    FutureProvider.family<UserModel, String>((ref, userId) {
+  return UserService().getUserById(userId); // Fetch user by their userId
 });
 
 class UserService {

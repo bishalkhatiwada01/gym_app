@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Color.fromARGB(255, 230, 240, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -72,14 +72,12 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 // Icon
                 Icon(
-                  Icons.person,
+                  Icons.fitness_center_sharp,
                   size: 80,
                   color: Theme.of(context).colorScheme.inversePrimary,
                 ),
-
-                // name of app
                 Text(
-                  '''Let's Get Started!!!''',
+                  'Lets Get Started!!',
                   style: TextStyle(
                     fontSize: 20.sp,
                   ),

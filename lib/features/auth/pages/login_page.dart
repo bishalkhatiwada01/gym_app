@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Color.fromARGB(255, 230, 240, 255),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(25.sp),
@@ -49,12 +49,12 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.person,
+                    Icons.fitness_center_sharp,
                     size: 80,
                     color: Theme.of(context).colorScheme.inversePrimary,
                   ),
                   Text(
-                    'Welcome Back!!',
+                    'Welcome Back to GYM!!',
                     style: TextStyle(
                       fontSize: 20.sp,
                     ),

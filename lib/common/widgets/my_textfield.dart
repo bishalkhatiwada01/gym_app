@@ -16,6 +16,7 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      cursorColor: Theme.of(context).colorScheme.inversePrimary,
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(

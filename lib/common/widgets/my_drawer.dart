@@ -7,7 +7,6 @@ import 'package:gymapp/features/bmi/screens/input_screen.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
 import 'package:gymapp/features/payment/khalti_payment_page.dart';
 import 'package:gymapp/features/workout_plan/workout_plan_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({
@@ -27,7 +26,9 @@ class MyDrawer extends StatelessWidget {
       }
       return false;
     } catch (e) {
-      print('Error checking payment status: $e');
+      if (kDebugMode) {
+        print('Error checking payment status: $e');
+      }
       return false;
     }
   }
