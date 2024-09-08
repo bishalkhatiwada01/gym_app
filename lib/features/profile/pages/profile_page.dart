@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
+import 'package:gymapp/features/payment/pages/payment_history_page.dart';
 import 'package:gymapp/features/profile/data/user_service.dart';
 import 'package:gymapp/features/profile/widgets/my_card_profile.dart';
 import 'package:share_plus/share_plus.dart';
@@ -221,12 +222,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         SizedBox(height: 6.h),
                         MyCardProfile(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => DonationHistoryPage(),
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PaymentHistoryPage(),
+                              ),
+                            );
                           },
                           title: 'Payment History',
                           leading: const Icon(

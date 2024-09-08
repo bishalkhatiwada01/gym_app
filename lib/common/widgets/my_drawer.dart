@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/bmi/screens/input_screen.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
-import 'package:gymapp/features/payment/khalti_payment_page.dart';
+import 'package:gymapp/features/payment/pages/khalti_payment_page.dart';
+import 'package:gymapp/features/payment/pages/payment_history_page.dart';
+import 'package:gymapp/features/profile/pages/profile_page.dart';
 import 'package:gymapp/features/workout_plan/workout_plan_page.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -111,7 +113,9 @@ class MyDrawer extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.pop(context);
-                // Navigate to profile page
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
               },
             ),
           ),
@@ -193,6 +197,23 @@ class MyDrawer extends StatelessWidget {
                     SnackBar(content: Text('Error: ${e.toString()}')),
                   );
                 }
+              },
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsets.only(left: 20.w),
+            child: ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text(
+                'PAYMENT HISTORY',
+                style: TextStyle(fontSize: 14, letterSpacing: 4),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => PaymentHistoryPage()),
+                );
               },
             ),
           ),

@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gymapp/features/payment/payment_button.dart';
+import 'package:gymapp/features/payment/service/payment_service.dart'; // Import the service
+import 'package:gymapp/features/payment/widgets/payment_button.dart';
 import 'package:gymapp/features/profile/data/user_service.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 
@@ -15,6 +16,10 @@ class PaymentPage extends ConsumerStatefulWidget {
 }
 
 class _PaymentPageState extends ConsumerState<PaymentPage> {
+  final currentUser = FirebaseAuth.instance.currentUser!.uid;
+  final paymentService =
+      PaymentDataSource(); // Create an instance of the service
+
   @override
   Widget build(BuildContext context) {
     final userDataAsyncValue = ref.watch(userProvider);
@@ -110,8 +115,6 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
     );
   }
 
-  final currentUser = FirebaseAuth.instance.currentUser!.uid;
-
   void payWithKhaltiInApp(int amount, String username) {
     KhaltiScope.of(context).pay(
       config: PaymentConfig(
@@ -129,17 +132,20 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
   }
 
   void onSuccess(PaymentSuccessModel success) {
-    final firestoreInstance = FirebaseFirestore.instance;
+    final amount = success.amount / 100; // Convert to proper currency unit
+    final transactionId = success.idx;
 
-    firestoreInstance.collection('payments').add({
-      'userId': currentUser,
-      'amount': success.amount / 100, // Convert back to proper currency unit
-      'transactionId': success.idx,
-      'paymentDate': DateTime.now(),
-      'paymentType': 'Khalti',
-    }).then((value) {
+    // Use the payment service to create a payment record
+    paymentService
+        .createPayment(
+      userId: currentUser,
+      amount: amount,
+      paymentType: 'Khalti',
+      transactionId: transactionId,
+    )
+        .then((message) {
       if (kDebugMode) {
-        print("Payment Added");
+        print(message);
       }
     }).catchError((error) {
       if (kDebugMode) {
@@ -147,6 +153,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
       }
     });
 
+    // Show success dialog
     showDialog(
       context: context,
       builder: (context) {

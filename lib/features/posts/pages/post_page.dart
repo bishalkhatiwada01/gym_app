@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gymapp/features/posts/data/post_data_source.dart';
 import 'package:gymapp/features/posts/pages/create_post_page.dart';
 import 'package:gymapp/features/posts/widgets/post_card.dart';
+import 'package:gymapp/features/profile/data/user_service.dart';
 import 'package:gymapp/features/profile/model/user_model.dart';
 
 class PostPage extends ConsumerStatefulWidget {
@@ -42,6 +43,7 @@ class _PostPageState extends ConsumerState<PostPage> {
               : RefreshIndicator(
                   onRefresh: () async {
                     ref.refresh(postProvider);
+                    ref.refresh(userProvider);
                   },
                   child: ListView.builder(
                     itemBuilder: (context, index) {
