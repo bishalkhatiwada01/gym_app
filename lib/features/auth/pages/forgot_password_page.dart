@@ -36,7 +36,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 230, 240, 255),
+        backgroundColor: const Color.fromARGB(255, 230, 240, 255),
         appBar: AppBar(
           leading: const MyBackButton(),
           elevation: 0,

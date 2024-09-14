@@ -9,20 +9,16 @@ class WorkoutQuestionsPage extends StatefulWidget {
 }
 
 class _WorkoutQuestionsPageState extends State<WorkoutQuestionsPage> {
-  // Create controllers for each option
   final TextEditingController _loseWeightController = TextEditingController();
   final TextEditingController _buildMuscleController = TextEditingController();
   final TextEditingController _keepFitController = TextEditingController();
 
-  // Variable to track the selected goal
   String _selectedGoal = '';
 
-  // Function to update the selected goal
   void _selectGoal(String goal, TextEditingController controller) {
     setState(() {
       _selectedGoal = goal;
       controller.text = goal;
-      // You can also save the selected goal to a database or use it in your app logic
     });
   }
 

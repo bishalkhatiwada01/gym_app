@@ -7,7 +7,6 @@ import 'package:gymapp/common/themes/dark_theme.dart';
 import 'package:gymapp/common/themes/light_theme.dart';
 import 'package:gymapp/common/widgets/my_bottom_navbar.dart';
 import 'package:gymapp/features/auth/services/status_page.dart';
-import 'package:gymapp/features/workout_plan/fitness_form.dart';
 import 'package:gymapp/features/dashboard/home_page.dart';
 import 'package:gymapp/features/dashboard/workout_question_page.dart';
 import 'package:gymapp/features/posts/pages/post_page.dart';
@@ -36,12 +35,12 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return SafeArea(
           child: KhaltiScope(
-            publicKey: 'test_public_key_49536e9f1a424b6fa5c79d0b85b765f6',
+            publicKey: 'be7e1c4fb641490181b25142e49efe15',
             enabledDebugging: true,
             builder: (context, navigatorKey) {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
-                title: 'Charity Management App',
+                title: 'Gym App',
                 theme: lightMode,
                 darkTheme: darkMode,
                 home: child,

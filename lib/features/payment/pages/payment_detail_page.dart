@@ -1,7 +1,6 @@
 // payment_detail_page.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/common/functions/date.dart';
 import 'package:gymapp/features/payment/model/payment_model.dart';
 import 'package:pdf/widgets.dart' as pw;

@@ -8,7 +8,7 @@ import 'package:gymapp/features/auth/pages/login_page.dart';
 import 'package:gymapp/features/payment/pages/khalti_payment_page.dart';
 import 'package:gymapp/features/payment/pages/payment_history_page.dart';
 import 'package:gymapp/features/profile/pages/profile_page.dart';
-import 'package:gymapp/features/workout_plan/workout_plan_page.dart';
+import 'package:gymapp/features/workout_plan/pages/user_input.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({
@@ -150,7 +150,7 @@ class MyDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => InputWorkoutPlan()),
+                  MaterialPageRoute(builder: (context) => InputPage()),
                 );
               },
             ),
