@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gymapp/features/workout_plan/data/workout_logic.dart';
+import 'package:gymapp/features/fitness/common/user_model.dart';
+import 'package:gymapp/features/fitness/diet/diet_display_page.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -118,25 +119,80 @@ class _InputPageState extends State<InputPage> {
               },
             ),
             SizedBox(height: 20),
+
+            //  ElevatedButton(
+            //   child: Text('Get Workout Plan'),
+            //   onPressed: () {
+            //     if (_formKey.currentState!.validate()) {
+            //       _formKey.currentState!.save();
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => LogicPage(
+            //             age: int.parse(_age),
+            //             weight: double.parse(_weight),
+            //             height: double.parse(_height),
+            //             fitnessLevel: _fitnessLevel,
+            //             goal: _goal,
+            //             gender: _gender,
+            //             targetWeight: _goal == 'Weight Loss'
+            //                 ? double.parse(_targetWeight)
+            //                 : null,
+            //           ),
+            //         ),
+            //       );
+            //     }
+            //   },
+            // ),
+
+            // ElevatedButton(
+            //   child: Text('Get Nutrition Plan'),
+            //   onPressed: () {
+            //     if (_formKey.currentState!.validate()) {
+            //       _formKey.currentState!.save();
+            //       final userProfile = UserProfile(
+            //         age: int.parse(_age),
+            //         weight: double.parse(_weight),
+            //         height: double.parse(_height),
+            //         fitnessLevel: _fitnessLevel,
+            //         goal: _goal,
+            //         gender: _gender,
+            //         targetWeight: _goal == 'Weight Loss'
+            //             ? double.parse(_targetWeight)
+            //             : null,
+            //       );
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) =>
+            //               DetailedNutritionPage(userProfile: userProfile),
+            //         ),
+            //       );
+            //     }
+            //   },
+            // ),
+            //
             ElevatedButton(
-              child: Text('Get Workout Plan'),
+              child: Text('Get Diet Plan'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
+                  final userProfile = UserProfile(
+                    age: int.parse(_age),
+                    weight: double.parse(_weight),
+                    height: double.parse(_height),
+                    fitnessLevel: _fitnessLevel,
+                    goal: _goal,
+                    gender: _gender,
+                    targetWeight: _goal == 'Weight Loss'
+                        ? double.parse(_targetWeight)
+                        : null,
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LogicPage(
-                        age: int.parse(_age),
-                        weight: double.parse(_weight),
-                        height: double.parse(_height),
-                        fitnessLevel: _fitnessLevel,
-                        goal: _goal,
-                        gender: _gender,
-                        targetWeight: _goal == 'Weight Loss'
-                            ? double.parse(_targetWeight)
-                            : null,
-                      ),
+                      builder: (context) =>
+                          DietRecommendationPage(userProfile: userProfile),
                     ),
                   );
                 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymapp/features/workout_plan/data/workout_sample_data.dart';
+import 'package:gymapp/features/fitness/workout_plan/data/workout_sample_data.dart';
 
 class ResultPage extends StatelessWidget {
   final List<DailyWorkout> weeklyWorkout;
@@ -32,18 +32,13 @@ class ResultPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Personalized Weekly Workout Plan',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Age: $age, Weight: ${weight}kg, Height: ${height}cm\n'
-              'Fitness Level: $fitnessLevel, Goal: $goal, Gender: $gender',
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
+            child: Card(
+              child: Text(
+                'Age: $age, Weight: ${weight}kg, Height: ${height}cm\n'
+                'Fitness Level: $fitnessLevel, Goal: $goal, Gender: $gender',
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           Expanded(

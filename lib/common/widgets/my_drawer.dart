@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/bmi/screens/input_screen.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
+import 'package:gymapp/features/fitness/common/input_page.dart';
 import 'package:gymapp/features/payment/pages/khalti_payment_page.dart';
 import 'package:gymapp/features/payment/pages/payment_history_page.dart';
 import 'package:gymapp/features/profile/pages/profile_page.dart';
-import 'package:gymapp/features/workout_plan/pages/user_input.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({
