@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
           ),
         );
       },
-      child: StatusPage(),
+      child: const StatusPage(),
     );
   }
 }
@@ -74,7 +74,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     PostPage(),
     const ProfilePage(),
-    WorkoutQuestionsPage(),
+    const WorkoutQuestionsPage(),
   ];
 
   int _selectedIndex = 0;

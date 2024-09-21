@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gymapp/features/fitness/workout_plan/data/workout_recommendation.dart';
+import 'package:gymapp/features/fitness/nutrition/nutrition_display_page.dart';
 
-class InputPage extends StatefulWidget {
-  const InputPage({super.key});
-
+class NutritionInputPage extends StatefulWidget {
   @override
-  _InputPageState createState() => _InputPageState();
+  _NutritionInputPageState createState() => _NutritionInputPageState();
 }
 
-class _InputPageState extends State<InputPage> {
+class _NutritionInputPageState extends State<NutritionInputPage> {
   final _formKey = GlobalKey<FormState>();
   String _age = '';
   String _weight = '';
@@ -22,15 +20,15 @@ class _InputPageState extends State<InputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Input Physical Status'),
+        title: Text('Input Physical Status'),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
           children: <Widget>[
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Age'),
+              decoration: InputDecoration(labelText: 'Age'),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -41,7 +39,7 @@ class _InputPageState extends State<InputPage> {
               onSaved: (value) => _age = value!,
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Weight (kg)'),
+              decoration: InputDecoration(labelText: 'Weight (kg)'),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -52,7 +50,7 @@ class _InputPageState extends State<InputPage> {
               onSaved: (value) => _weight = value!,
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Height (cm)'),
+              decoration: InputDecoration(labelText: 'Height (cm)'),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -64,11 +62,11 @@ class _InputPageState extends State<InputPage> {
             ),
             DropdownButtonFormField<String>(
               value: _fitnessLevel,
-              decoration: const InputDecoration(labelText: 'Fitness Level'),
+              decoration: InputDecoration(labelText: 'Fitness Level'),
               items: ['Beginner', 'Intermediate', 'Advanced']
                   .map((label) => DropdownMenuItem(
-                        value: label,
                         child: Text(label),
+                        value: label,
                       ))
                   .toList(),
               onChanged: (value) {
@@ -79,11 +77,11 @@ class _InputPageState extends State<InputPage> {
             ),
             DropdownButtonFormField<String>(
               value: _goal,
-              decoration: const InputDecoration(labelText: 'Your Goal'),
+              decoration: InputDecoration(labelText: 'Your Goal'),
               items: ['Weight Loss', 'Muscle Gain', 'General Fitness']
                   .map((label) => DropdownMenuItem(
-                        value: label,
                         child: Text(label),
+                        value: label,
                       ))
                   .toList(),
               onChanged: (value) {
@@ -94,8 +92,7 @@ class _InputPageState extends State<InputPage> {
             ),
             if (_goal == 'Weight Loss')
               TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Target Weight (kg)'),
+                decoration: InputDecoration(labelText: 'Target Weight (kg)'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -107,11 +104,11 @@ class _InputPageState extends State<InputPage> {
               ),
             DropdownButtonFormField<String>(
               value: _gender,
-              decoration: const InputDecoration(labelText: 'Gender'),
+              decoration: InputDecoration(labelText: 'Gender'),
               items: ['Male', 'Female']
                   .map((label) => DropdownMenuItem(
-                        value: label,
                         child: Text(label),
+                        value: label,
                       ))
                   .toList(),
               onChanged: (value) {
@@ -120,26 +117,28 @@ class _InputPageState extends State<InputPage> {
                 });
               },
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             ElevatedButton(
-              child: const Text('Get Workout Plan'),
+              child: Text('Get Nutrition Plan'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
+                  final userProfile = UserProfile(
+                    age: int.parse(_age),
+                    weight: double.parse(_weight),
+                    height: double.parse(_height),
+                    fitnessLevel: _fitnessLevel,
+                    goal: _goal,
+                    gender: _gender,
+                    targetWeight: _goal == 'Weight Loss'
+                        ? double.parse(_targetWeight)
+                        : null,
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LogicPage(
-                        age: int.parse(_age),
-                        weight: double.parse(_weight),
-                        height: double.parse(_height),
-                        fitnessLevel: _fitnessLevel,
-                        goal: _goal,
-                        gender: _gender,
-                        targetWeight: _goal == 'Weight Loss'
-                            ? double.parse(_targetWeight)
-                            : null,
-                      ),
+                      builder: (context) =>
+                          DetailedNutritionPage(userProfile: userProfile),
                     ),
                   );
                 }
