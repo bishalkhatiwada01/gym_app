@@ -32,13 +32,13 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => StatusPage()));
+        .push(MaterialPageRoute(builder: (context) => const StatusPage()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 230, 240, 255),
+      backgroundColor: const Color.fromARGB(255, 230, 240, 255),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(25.sp),

@@ -13,7 +13,8 @@ class LogicPage extends StatelessWidget {
   final String gender;
   final double? targetWeight;
 
-  LogicPage({
+  const LogicPage({
+    super.key,
     required this.age,
     required this.weight,
     required this.height,
@@ -67,7 +68,7 @@ class LogicPage extends StatelessWidget {
             instruction: 'Light cardio and dynamic stretching',
             sets: 1,
             reps: 1,
-            duration: Duration(minutes: 10),
+            duration: const Duration(minutes: 10),
             caloriesPerMinute: 5,
           )
         ];
@@ -82,7 +83,7 @@ class LogicPage extends StatelessWidget {
           instruction: 'Light cardio and static stretching',
           sets: 1,
           reps: 1,
-          duration: Duration(minutes: 10),
+          duration: const Duration(minutes: 10),
           caloriesPerMinute: 3,
         ));
 
@@ -123,7 +124,7 @@ class LogicPage extends StatelessWidget {
                   'Light walk, gentle yoga, or any low-intensity activity you enjoy',
               sets: 1,
               reps: 1,
-              duration: Duration(minutes: 45),
+              duration: const Duration(minutes: 45),
               caloriesPerMinute: 4,
             )
           ],

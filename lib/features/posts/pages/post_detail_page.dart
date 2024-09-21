@@ -364,6 +364,8 @@
 //   }
 // }
 
+// ignore_for_file: unused_result
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -516,6 +518,7 @@ class _PostDetailsPageState extends ConsumerState<PostDetailsPage> {
                     borderRadius: const BorderRadius.all(
                       Radius.circular(10.0),
                     ),
+                    // ignore: unnecessary_null_comparison
                     child: widget.postData.postImageUrl != null
                         ? Image.network(
                             widget.postData.postImageUrl,

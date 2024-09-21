@@ -1,56 +1,188 @@
 import 'package:flutter/material.dart';
-
-class UserProfile {
-  final int age;
-  final double weight;
-  final double height;
-  final String fitnessLevel;
-  final String goal;
-  final String gender;
-  final double? targetWeight;
-
-  UserProfile({
-    required this.age,
-    required this.weight,
-    required this.height,
-    required this.fitnessLevel,
-    required this.goal,
-    required this.gender,
-    this.targetWeight,
-  });
-}
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gymapp/features/fitness/common/user_model.dart';
+import 'package:gymapp/features/fitness/workout_plan/pages/workout_input.dart';
 
 class DetailedNutritionPage extends StatelessWidget {
   final UserProfile userProfile;
 
-  DetailedNutritionPage({required this.userProfile});
+  const DetailedNutritionPage({super.key, required this.userProfile});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Personalized Nutrition Plan'),
+        title: const Text('Your Personalized Nutrition Plan'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildCalorieBreakdown(),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildMacronutrientBreakdown(),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildMealPlan(),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildNutrientRecommendations(),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildHydrationGuide(),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildDietaryConsiderations(),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => _submitNutritionPlan(context),
+              child: const Text('Submit Nutrition Plan and Continue'),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  // ... (all existing build methods remain the same)
+
+  Future<void> _submitNutritionPlan(BuildContext context) async {
+    try {
+      // Generate nutrition plan data
+      Map<String, dynamic> nutritionPlan = {
+        'calorie_breakdown': {
+          'bmr': _calculateBMR(),
+          'tdee': _calculateTDEE(_calculateBMR()),
+          'target_calories':
+              _calculateTargetCalories(_calculateTDEE(_calculateBMR())),
+        },
+        'macronutrient_breakdown': _generateMacronutrientBreakdown(),
+        'meal_plan': _generateMealPlan(),
+        'nutrient_recommendations': _generateNutrientRecommendations(),
+        'hydration_guide': _generateHydrationGuide(),
+        'dietary_considerations': _generateDietaryConsiderations(),
+      };
+
+      // Upload to Firebase
+      await _uploadToFirebase(nutritionPlan);
+
+      // Navigate to WorkoutInputPage
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WorkoutInputPage(userProfile: userProfile),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+
+  Future<void> _uploadToFirebase(Map<String, dynamic> nutritionPlan) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('users').add({
+        'user_profile':
+            userProfile.toMap(), // Make sure UserProfile has a toMap() method
+        'nutrition_plan': nutritionPlan,
+        'created_at': FieldValue.serverTimestamp(),
+      });
+    } else {
+      throw Exception('User not authenticated');
+    }
+  }
+
+  Map<String, dynamic> _generateMacronutrientBreakdown() {
+    int targetCalories =
+        _calculateTargetCalories(_calculateTDEE(_calculateBMR()));
+    int proteinGrams = (targetCalories * 0.3 / 4).round();
+    int carbGrams = (targetCalories * 0.4 / 4).round();
+    int fatGrams = (targetCalories * 0.3 / 9).round();
+
+    return {
+      'protein': {
+        'grams': proteinGrams,
+        'calories': proteinGrams * 4,
+        'percentage': 30
+      },
+      'carbohydrates': {
+        'grams': carbGrams,
+        'calories': carbGrams * 4,
+        'percentage': 40
+      },
+      'fat': {'grams': fatGrams, 'calories': fatGrams * 9, 'percentage': 30},
+    };
+  }
+
+  Map<String, dynamic> _generateMealPlan() {
+    int targetCalories =
+        _calculateTargetCalories(_calculateTDEE(_calculateBMR()));
+
+    return {
+      'breakfast': {
+        'calories': (targetCalories * 0.25).round(),
+        'suggestions': [
+          'Protein-rich option (e.g., eggs, Greek yogurt)',
+          'Complex carbohydrates (e.g., oatmeal, whole grain toast)',
+          'Healthy fats (e.g., avocado, nuts)',
+          'Fruits for vitamins and fiber',
+        ],
+      },
+      'lunch': {
+        'calories': (targetCalories * 0.35).round(),
+        'suggestions': [
+          'Lean protein (e.g., chicken, fish, tofu)',
+          'Complex carbohydrates (e.g., brown rice, quinoa)',
+          'Large portion of vegetables',
+          'Healthy fats (e.g., olive oil dressing)',
+        ],
+      },
+      'dinner': {
+        'calories': (targetCalories * 0.3).round(),
+        'suggestions': [
+          'Lean protein',
+          'Complex carbohydrates',
+          'Large portion of vegetables',
+          'Healthy fats',
+        ],
+      },
+      'snacks': {
+        'calories': (targetCalories * 0.1).round(),
+        'suggestions': [
+          'Fruits, vegetables, nuts, or low-fat dairy',
+        ],
+      },
+    };
+  }
+
+  Map<String, dynamic> _generateNutrientRecommendations() {
+    return {
+      'fiber': '25-30g per day',
+      'calcium': '1000-1200mg per day',
+      'iron': '8-18mg per day (higher for menstruating women)',
+      'vitamin_d': '600-800 IU per day',
+      'omega_3': 'Include fatty fish 2-3 times per week',
+    };
+  }
+
+  Map<String, dynamic> _generateHydrationGuide() {
+    double waterIntake =
+        userProfile.weight * 0.03; // 30ml per kg of body weight
+    return {
+      'daily_water_intake_liters': waterIntake.toStringAsFixed(1),
+      'glasses_of_water': (waterIntake * 1000 / 250).round(),
+    };
+  }
+
+  List<String> _generateDietaryConsiderations() {
+    return [
+      'Choose whole, unprocessed foods when possible',
+      'Limit added sugars and saturated fats',
+      'Include a variety of colorful fruits and vegetables',
+      'Opt for lean proteins and plant-based protein sources',
+      'Choose whole grains over refined grains',
+      'Consider timing of meals around your daily activities',
+    ];
   }
 
   Widget _buildCalorieBreakdown() {
@@ -60,17 +192,17 @@ class DetailedNutritionPage extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Calorie Breakdown',
+            const Text('Calorie Breakdown',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text('Basal Metabolic Rate (BMR): $bmr kcal'),
             Text('Total Daily Energy Expenditure (TDEE): $tdee kcal'),
             Text('Daily Calorie Target: $targetCalories kcal'),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
                 'Note: This calorie target is adjusted based on your goal of ${userProfile.goal}.'),
           ],
@@ -88,19 +220,19 @@ class DetailedNutritionPage extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Macronutrient Breakdown',
+            const Text('Macronutrient Breakdown',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
                 'Protein: $proteinGrams g (${(proteinGrams * 4).round()} kcal, 30%)'),
             Text(
                 'Carbohydrates: $carbGrams g (${(carbGrams * 4).round()} kcal, 40%)'),
             Text('Fat: $fatGrams g (${(fatGrams * 9).round()} kcal, 30%)'),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text('Note: This breakdown is optimized for ${userProfile.goal}.'),
           ],
         ),
@@ -114,36 +246,36 @@ class DetailedNutritionPage extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Suggested Meal Plan',
+            const Text('Suggested Meal Plan',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text('Breakfast: ${(targetCalories * 0.25).round()} kcal'),
-            Text('  - Protein-rich option (e.g., eggs, Greek yogurt)'),
-            Text(
+            const Text('  - Protein-rich option (e.g., eggs, Greek yogurt)'),
+            const Text(
                 '  - Complex carbohydrates (e.g., oatmeal, whole grain toast)'),
-            Text('  - Healthy fats (e.g., avocado, nuts)'),
-            Text('  - Fruits for vitamins and fiber'),
-            SizedBox(height: 8),
+            const Text('  - Healthy fats (e.g., avocado, nuts)'),
+            const Text('  - Fruits for vitamins and fiber'),
+            const SizedBox(height: 8),
             Text('Lunch: ${(targetCalories * 0.35).round()} kcal'),
-            Text('  - Lean protein (e.g., chicken, fish, tofu)'),
-            Text('  - Complex carbohydrates (e.g., brown rice, quinoa)'),
-            Text('  - Large portion of vegetables'),
-            Text('  - Healthy fats (e.g., olive oil dressing)'),
-            SizedBox(height: 8),
+            const Text('  - Lean protein (e.g., chicken, fish, tofu)'),
+            const Text('  - Complex carbohydrates (e.g., brown rice, quinoa)'),
+            const Text('  - Large portion of vegetables'),
+            const Text('  - Healthy fats (e.g., olive oil dressing)'),
+            const SizedBox(height: 8),
             Text('Dinner: ${(targetCalories * 0.3).round()} kcal'),
-            Text('  - Lean protein'),
-            Text('  - Complex carbohydrates'),
-            Text('  - Large portion of vegetables'),
-            Text('  - Healthy fats'),
-            SizedBox(height: 8),
+            const Text('  - Lean protein'),
+            const Text('  - Complex carbohydrates'),
+            const Text('  - Large portion of vegetables'),
+            const Text('  - Healthy fats'),
+            const SizedBox(height: 8),
             Text('Snacks: ${(targetCalories * 0.1).round()} kcal'),
-            Text('  - Fruits, vegetables, nuts, or low-fat dairy'),
-            SizedBox(height: 8),
-            Text(
+            const Text('  - Fruits, vegetables, nuts, or low-fat dairy'),
+            const SizedBox(height: 8),
+            const Text(
                 'Note: Adjust portion sizes to meet calorie goals. Aim for a variety of foods to ensure a wide range of nutrients.'),
           ],
         ),
@@ -152,7 +284,7 @@ class DetailedNutritionPage extends StatelessWidget {
   }
 
   Widget _buildNutrientRecommendations() {
-    return Card(
+    return const Card(
       child: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -181,19 +313,19 @@ class DetailedNutritionPage extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Hydration Guide',
+            const Text('Hydration Guide',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
                 'Recommended daily water intake: ${waterIntake.toStringAsFixed(1)} liters'),
             Text(
                 'This is approximately ${(waterIntake * 1000 / 250).round()} glasses of water.'),
-            SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 8),
+            const Text(
                 'Note: Increase intake during hot weather or intense physical activity.'),
           ],
         ),
@@ -202,7 +334,7 @@ class DetailedNutritionPage extends StatelessWidget {
   }
 
   Widget _buildDietaryConsiderations() {
-    return Card(
+    return const Card(
       child: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(

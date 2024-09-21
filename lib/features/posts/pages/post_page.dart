@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: unused_result
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/common/widgets/my_drawer.dart';
@@ -8,10 +8,9 @@ import 'package:gymapp/features/posts/data/post_data_source.dart';
 import 'package:gymapp/features/posts/pages/create_post_page.dart';
 import 'package:gymapp/features/posts/widgets/post_card.dart';
 import 'package:gymapp/features/profile/data/user_service.dart';
-import 'package:gymapp/features/profile/model/user_model.dart';
 
 class PostPage extends ConsumerStatefulWidget {
-  PostPage({
+  const PostPage({
     super.key,
   });
 
@@ -25,13 +24,13 @@ class _PostPageState extends ConsumerState<PostPage> {
     final postData = ref.watch(postProvider);
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 230, 240, 255),
+      backgroundColor: const Color.fromARGB(255, 230, 240, 255),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 230, 240, 255),
-        title: Text("POSTS"),
+        backgroundColor: const Color.fromARGB(255, 230, 240, 255),
+        title: const Text("POSTS"),
         centerTitle: true,
       ),
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
       body: postData.when(
         data: (data) {
           return data.isEmpty

@@ -17,8 +17,8 @@ class SmallPostCard extends ConsumerWidget {
 
   const SmallPostCard({
     required this.postData,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

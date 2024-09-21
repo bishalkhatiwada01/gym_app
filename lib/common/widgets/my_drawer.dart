@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/bmi/screens/input_screen.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
-import 'package:gymapp/features/fitness/common/input_page.dart';
+import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
 import 'package:gymapp/features/payment/pages/khalti_payment_page.dart';
 import 'package:gymapp/features/payment/pages/payment_history_page.dart';
 import 'package:gymapp/features/profile/pages/profile_page.dart';
@@ -114,7 +114,7 @@ class MyDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );
               },
             ),
@@ -132,7 +132,7 @@ class MyDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => InputScreen()),
+                  MaterialPageRoute(builder: (context) => const InputScreen()),
                 );
               },
             ),
@@ -144,13 +144,14 @@ class MyDrawer extends StatelessWidget {
             child: ListTile(
               leading: const Icon(Icons.fitness_center),
               title: const Text(
-                'WORKOUT PLAN',
+                'MY PLANS',
                 style: TextStyle(fontSize: 14, letterSpacing: 4),
               ),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => InputPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const DietInputPage()),
                 );
               },
             ),
@@ -212,7 +213,8 @@ class MyDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => PaymentHistoryPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const PaymentHistoryPage()),
                 );
               },
             ),

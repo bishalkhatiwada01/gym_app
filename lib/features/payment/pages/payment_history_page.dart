@@ -5,7 +5,7 @@ import 'package:gymapp/features/payment/pages/payment_detail_page.dart';
 import 'package:gymapp/features/payment/service/payment_service.dart';
 
 class PaymentHistoryPage extends ConsumerWidget {
-  const PaymentHistoryPage({Key? key}) : super(key: key);
+  const PaymentHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

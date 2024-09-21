@@ -6,6 +6,7 @@ import 'package:gymapp/common/widgets/my_textfield.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
 import 'package:gymapp/features/auth/services/auth_service.dart';
 import 'package:gymapp/features/auth/services/status_page.dart';
+import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
@@ -34,21 +35,21 @@ class _RegisterPageState extends State<RegisterPage> {
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const StatusPage()),
+      MaterialPageRoute(builder: (context) => const DietInputPage()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 230, 240, 255),
+      backgroundColor: const Color.fromARGB(255, 230, 240, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => LoginPage()));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const LoginPage()));
           },
           child: Container(
             decoration: const BoxDecoration(
@@ -141,7 +142,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                                builder: (context) => const LoginPage()));
                       },
                       child: const Text('Login Here',
                           style: TextStyle(

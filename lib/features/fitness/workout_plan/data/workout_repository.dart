@@ -17,39 +17,78 @@ class WorkoutPlanRepository {
     double? targetWeight,
   }) async {
     try {
-      await _firestore.collection('workout_plans').add({
-        'userId': userId,
-        'createdAt': FieldValue.serverTimestamp(),
-        'age': age,
-        'weight': weight,
-        'height': height,
-        'fitnessLevel': fitnessLevel,
-        'goal': goal,
-        'gender': gender,
-        'targetWeight': targetWeight,
-        'weeklyWorkout': weeklyWorkout
-            .map((dailyWorkout) => {
-                  'day': dailyWorkout.day,
-                  'focusArea': dailyWorkout.focusArea,
-                  'totalCalories': dailyWorkout.totalCalories,
-                  'exercises': dailyWorkout.exercises
-                      .map((exercise) => {
-                            'name': exercise.name,
-                            'instruction': exercise.instruction,
-                            'sets': exercise.sets,
-                            'reps': exercise.reps,
-                            'duration': exercise.duration.inSeconds,
-                            'caloriesPerMinute': exercise.caloriesPerMinute,
-                          })
-                      .toList(),
-                })
-            .toList(),
-      });
+      // Query to check if the workout plan for the user already exists
+      final querySnapshot = await _firestore
+          .collection('workout_plans')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // If the workout plan exists, update it
+        final docId = querySnapshot.docs.first.id;
+        await _firestore.collection('workout_plans').doc(docId).update({
+          'createdAt': FieldValue.serverTimestamp(),
+          'age': age,
+          'weight': weight,
+          'height': height,
+          'fitnessLevel': fitnessLevel,
+          'goal': goal,
+          'gender': gender,
+          'targetWeight': targetWeight,
+          'weeklyWorkout': weeklyWorkout
+              .map((dailyWorkout) => {
+                    'day': dailyWorkout.day,
+                    'focusArea': dailyWorkout.focusArea,
+                    'totalCalories': dailyWorkout.totalCalories,
+                    'exercises': dailyWorkout.exercises
+                        .map((exercise) => {
+                              'name': exercise.name,
+                              'instruction': exercise.instruction,
+                              'sets': exercise.sets,
+                              'reps': exercise.reps,
+                              'duration': exercise.duration.inSeconds,
+                              'caloriesPerMinute': exercise.caloriesPerMinute,
+                            })
+                        .toList(),
+                  })
+              .toList(),
+        });
+      } else {
+        // If no workout plan exists, create a new one
+        await _firestore.collection('workout_plans').add({
+          'userId': userId,
+          'createdAt': FieldValue.serverTimestamp(),
+          'age': age,
+          'weight': weight,
+          'height': height,
+          'fitnessLevel': fitnessLevel,
+          'goal': goal,
+          'gender': gender,
+          'targetWeight': targetWeight,
+          'weeklyWorkout': weeklyWorkout
+              .map((dailyWorkout) => {
+                    'day': dailyWorkout.day,
+                    'focusArea': dailyWorkout.focusArea,
+                    'totalCalories': dailyWorkout.totalCalories,
+                    'exercises': dailyWorkout.exercises
+                        .map((exercise) => {
+                              'name': exercise.name,
+                              'instruction': exercise.instruction,
+                              'sets': exercise.sets,
+                              'reps': exercise.reps,
+                              'duration': exercise.duration.inSeconds,
+                              'caloriesPerMinute': exercise.caloriesPerMinute,
+                            })
+                        .toList(),
+                  })
+              .toList(),
+        });
+      }
     } catch (e) {
       if (kDebugMode) {
         print('Error saving workout plan: $e');
       }
-      throw e;
+      rethrow;
     }
   }
 }

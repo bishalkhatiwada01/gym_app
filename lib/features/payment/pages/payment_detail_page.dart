@@ -9,7 +9,7 @@ import 'package:printing/printing.dart';
 class PaymentDetailPage extends StatelessWidget {
   final PaymentModel payment;
 
-  const PaymentDetailPage({Key? key, required this.payment}) : super(key: key);
+  const PaymentDetailPage({super.key, required this.payment});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class PaymentDetailPage extends StatelessWidget {
                 style: const TextStyle(fontSize: 18)),
             Text(
               "Posted ${timeAgo(DateTime.parse(payment.paymentDate))}",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
               ),
@@ -63,21 +63,22 @@ class PaymentDetailPage extends StatelessWidget {
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text('Payment Receipt', style: pw.TextStyle(fontSize: 24)),
+              pw.Text('Payment Receipt',
+                  style: const pw.TextStyle(fontSize: 24)),
               pw.SizedBox(height: 16),
               pw.Text('Transaction ID: ${payment.transactionId}',
-                  style: pw.TextStyle(fontSize: 18)),
+                  style: const pw.TextStyle(fontSize: 18)),
               pw.SizedBox(height: 8),
               pw.Text('Amount: Rs. ${payment.amount.toStringAsFixed(2)}',
-                  style: pw.TextStyle(fontSize: 18)),
+                  style: const pw.TextStyle(fontSize: 18)),
               pw.SizedBox(height: 8),
               pw.Text(
                 "Posted ${timeAgo(DateTime.parse(payment.paymentDate))}",
-                style: pw.TextStyle(fontSize: 12),
+                style: const pw.TextStyle(fontSize: 12),
               ),
               pw.SizedBox(height: 8),
               pw.Text('Payment Type: ${payment.paymentType}',
-                  style: pw.TextStyle(fontSize: 18)),
+                  style: const pw.TextStyle(fontSize: 18)),
             ],
           ),
         ),

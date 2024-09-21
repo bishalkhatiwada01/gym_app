@@ -5,6 +5,8 @@ import 'result_screen.dart';
 import '../widgets/gender_selector.dart'; // Import the GenderSelector widget
 
 class InputScreen extends StatefulWidget {
+  const InputScreen({super.key});
+
   @override
   _InputScreenState createState() => _InputScreenState();
 }
@@ -40,24 +42,24 @@ class _InputScreenState extends State<InputScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200], // Background color for the screen
       appBar: AppBar(
-        title: Text('BMI Calculator'),
+        title: const Text('BMI Calculator'),
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
                       CustomTextField(
@@ -68,7 +70,7 @@ class _InputScreenState extends State<InputScreen> {
                         icon: Icons.fitness_center,
                         // No validator here
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       CustomTextField(
                         controller: heightController,
                         label: 'Enter your height (cm)',
@@ -76,7 +78,7 @@ class _InputScreenState extends State<InputScreen> {
                         icon: Icons.height,
                         // No validator here
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       CustomTextField(
                         controller: ageController,
                         label: 'Enter your age',
@@ -84,7 +86,7 @@ class _InputScreenState extends State<InputScreen> {
                         icon: Icons.cake,
                         // No validator here
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       GenderSelector(
                         selectedGender: gender,
                         onChanged: (value) {
@@ -93,7 +95,7 @@ class _InputScreenState extends State<InputScreen> {
                           });
                         },
                       ),
-                      SizedBox(height: 30.0),
+                      const SizedBox(height: 30.0),
                       CustomButton(
                         text: 'Calculate BMI',
                         onPressed: () => _calculateBMI(context),

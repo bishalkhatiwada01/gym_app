@@ -5,8 +5,8 @@ class PaymentButton extends StatelessWidget {
 
   const PaymentButton({
     required this.onPaymentPressed,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

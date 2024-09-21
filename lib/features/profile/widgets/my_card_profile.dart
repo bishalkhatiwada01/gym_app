@@ -6,11 +6,11 @@ class MyCardProfile extends StatelessWidget {
   final VoidCallback onPressed;
 
   const MyCardProfile({
-    Key? key,
+    super.key,
     required this.title,
     required this.leading,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, unused_result
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,8 +69,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         'profileImageUrl': downloadUrl,
       });
     } catch (e) {
-      // Handle errors
-      print("Error uploading image: $e");
+      if (kDebugMode) {
+        print("Error uploading image: $e");
+      }
     }
   }
 

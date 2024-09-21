@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,19 +17,7 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String _message = "";
-  void _resetPassword() async {
-    try {
-      await _auth.sendPasswordResetEmail(email: _emailController.text);
-      setState(() {
-        _message = "Password reset email sent. Check your email.";
-      });
-    } catch (e) {
-      setState(() {
-        _message = "Error: ${e.toString()}";
-      });
-    }
-  }
+  final String _message = "";
 
   @override
   Widget build(BuildContext context) {

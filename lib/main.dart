@@ -9,6 +9,7 @@ import 'package:gymapp/common/widgets/my_bottom_navbar.dart';
 import 'package:gymapp/features/auth/services/status_page.dart';
 import 'package:gymapp/features/dashboard/home_page.dart';
 import 'package:gymapp/features/dashboard/workout_question_page.dart';
+import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
 import 'package:gymapp/features/posts/pages/post_page.dart';
 import 'package:gymapp/features/profile/pages/profile_page.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return SafeArea(
           child: KhaltiScope(
-            publicKey: 'be7e1c4fb641490181b25142e49efe15',
+            publicKey: 'test_public_key_49536e9f1a424b6fa5c79d0b85b765f6',
             enabledDebugging: true,
             builder: (context, navigatorKey) {
               return MaterialApp(
@@ -72,7 +73,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final _pages = [
     const HomePage(),
-    PostPage(),
+    const PostPage(),
     const ProfilePage(),
     const WorkoutQuestionsPage(),
   ];

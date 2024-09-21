@@ -7,7 +7,8 @@ class CustomTextField extends StatelessWidget {
   final IconData icon;
   final String? Function(String?)? validator; // Add validator parameter
 
-  CustomTextField({
+  const CustomTextField({
+    super.key,
     required this.controller,
     required this.label,
     this.keyboardType = TextInputType.text,
@@ -27,12 +28,12 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(25.0), // Rounded corners
         ),
         filled: true,
-        labelStyle: TextStyle(
+        labelStyle: const TextStyle(
           color: Colors.black,
         ),
         fillColor: Colors.white, // Background color for text field
-        contentPadding:
-            EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0), // Padding
+        contentPadding: const EdgeInsets.symmetric(
+            vertical: 10.0, horizontal: 15.0), // Padding
       ),
       validator: validator, // Set validator here
     );

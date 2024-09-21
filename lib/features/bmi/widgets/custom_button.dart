@@ -7,7 +7,8 @@ class CustomButton extends StatelessWidget {
   final bool isDisabled;
   final IconData? icon;
 
-  CustomButton({
+  const CustomButton({
+    super.key,
     required this.text,
     required this.onPressed,
     this.isLoading = false,
@@ -20,8 +21,8 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isDisabled ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-        textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -30,7 +31,7 @@ class CustomButton extends StatelessWidget {
         elevation: 5,
       ),
       child: isLoading
-          ? CircularProgressIndicator(
+          ? const CircularProgressIndicator(
               color: Colors.white,
             )
           : Row(
@@ -39,11 +40,11 @@ class CustomButton extends StatelessWidget {
               children: [
                 if (icon != null) ...[
                   Icon(icon, color: Colors.white),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                 ],
                 Text(
                   text,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),

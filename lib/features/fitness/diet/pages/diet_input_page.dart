@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gymapp/features/fitness/nutrition/nutrition_display_page.dart';
+import 'package:gymapp/features/fitness/common/user_model.dart';
+import 'package:gymapp/features/fitness/diet/diet_recommendation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gymapp/features/fitness/nutrition/nutrition_input_page.dart';
 
 class DietInputPage extends StatefulWidget {
+  const DietInputPage({super.key});
+
   @override
   _DietInputPageState createState() => _DietInputPageState();
 }
@@ -20,15 +26,16 @@ class _DietInputPageState extends State<DietInputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input Physical Status'),
+        title: const Text('INPUT PHYSICAL STATUS'),
+        centerTitle: true,
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           children: <Widget>[
             TextFormField(
-              decoration: InputDecoration(labelText: 'Age'),
+              decoration: const InputDecoration(labelText: 'Age'),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -39,7 +46,7 @@ class _DietInputPageState extends State<DietInputPage> {
               onSaved: (value) => _age = value!,
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Weight (kg)'),
+              decoration: const InputDecoration(labelText: 'Weight (kg)'),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -50,7 +57,7 @@ class _DietInputPageState extends State<DietInputPage> {
               onSaved: (value) => _weight = value!,
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Height (cm)'),
+              decoration: const InputDecoration(labelText: 'Height (cm)'),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -62,11 +69,11 @@ class _DietInputPageState extends State<DietInputPage> {
             ),
             DropdownButtonFormField<String>(
               value: _fitnessLevel,
-              decoration: InputDecoration(labelText: 'Fitness Level'),
+              decoration: const InputDecoration(labelText: 'Fitness Level'),
               items: ['Beginner', 'Intermediate', 'Advanced']
                   .map((label) => DropdownMenuItem(
-                        child: Text(label),
                         value: label,
+                        child: Text(label),
                       ))
                   .toList(),
               onChanged: (value) {
@@ -77,11 +84,11 @@ class _DietInputPageState extends State<DietInputPage> {
             ),
             DropdownButtonFormField<String>(
               value: _goal,
-              decoration: InputDecoration(labelText: 'Your Goal'),
+              decoration: const InputDecoration(labelText: 'Your Goal'),
               items: ['Weight Loss', 'Muscle Gain', 'General Fitness']
                   .map((label) => DropdownMenuItem(
-                        child: Text(label),
                         value: label,
+                        child: Text(label),
                       ))
                   .toList(),
               onChanged: (value) {
@@ -92,7 +99,8 @@ class _DietInputPageState extends State<DietInputPage> {
             ),
             if (_goal == 'Weight Loss')
               TextFormField(
-                decoration: InputDecoration(labelText: 'Target Weight (kg)'),
+                decoration:
+                    const InputDecoration(labelText: 'Target Weight (kg)'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -104,11 +112,11 @@ class _DietInputPageState extends State<DietInputPage> {
               ),
             DropdownButtonFormField<String>(
               value: _gender,
-              decoration: InputDecoration(labelText: 'Gender'),
+              decoration: const InputDecoration(labelText: 'Gender'),
               items: ['Male', 'Female']
                   .map((label) => DropdownMenuItem(
-                        child: Text(label),
                         value: label,
+                        child: Text(label),
                       ))
                   .toList(),
               onChanged: (value) {
@@ -117,10 +125,13 @@ class _DietInputPageState extends State<DietInputPage> {
                 });
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              child: Text('Get Nutrition Plan'),
-              onPressed: () {
+              child: const Text(
+                'Generate Diet Plan and Continue',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   final userProfile = UserProfile(
@@ -134,46 +145,92 @@ class _DietInputPageState extends State<DietInputPage> {
                         ? double.parse(_targetWeight)
                         : null,
                   );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetailedNutritionPage(userProfile: userProfile),
-                    ),
-                  );
+
+                  // Generate diet recommendation
+                  final dietRecommendation = DietRecommendation(userProfile);
+                  final weeklyMealPlan =
+                      dietRecommendation.generateWeeklyMealPlan();
+
+                  final generalRecommendations =
+                      dietRecommendation.generateNutritionalTips();
+
+                  // Upload to Firebase
+                  try {
+                    await _uploadToFirebase(
+                        userProfile, weeklyMealPlan, generalRecommendations);
+
+                    // Navigate to NutritionInputPage
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NutritionInputPage(
+                          age: _age,
+                          weight: _weight,
+                          height: _height,
+                          fitnessLevel: _fitnessLevel,
+                          goal: _goal,
+                          gender: _gender,
+                          targetWeight: _targetWeight,
+                        ),
+                      ),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: ${e.toString()}')),
+                    );
+                  }
                 }
               },
             ),
-            //
-            // ElevatedButton(
-            //   child: Text('Get Diet Plan'),
-            //   onPressed: () {
-            //     if (_formKey.currentState!.validate()) {
-            //       _formKey.currentState!.save();
-            //       final userProfile = UserProfile(
-            //         age: int.parse(_age),
-            //         weight: double.parse(_weight),
-            //         height: double.parse(_height),
-            //         fitnessLevel: _fitnessLevel,
-            //         goal: _goal,
-            //         gender: _gender,
-            //         targetWeight: _goal == 'Weight Loss'
-            //             ? double.parse(_targetWeight)
-            //             : null,
-            //       );
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) =>
-            //               DietRecommendationPage(userProfile: userProfile),
-            //         ),
-            //       );
-            //     }
-            //   },
-            // ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _uploadToFirebase(
+    UserProfile userProfile,
+    List<Map<String, dynamic>> weeklyMealPlan,
+    List<String> generalRecommendations,
+  ) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // Get the current user's UID
+      final userId = user.uid;
+
+      // Reference to the diet_plans collection
+      final dietPlansCollection =
+          FirebaseFirestore.instance.collection('diet_plans');
+
+      // Query to check if a diet plan already exists for the user
+      final existingPlan = await dietPlansCollection
+          .where('user_id', isEqualTo: userId)
+          .limit(1)
+          .get();
+
+      if (existingPlan.docs.isNotEmpty) {
+        // If a diet plan already exists, update the document with the new data
+        await dietPlansCollection.doc(existingPlan.docs[0].id).update({
+          'user_profile': userProfile.toMap(),
+          'weekly_meal_plan': weeklyMealPlan,
+          'nutrition_tips': generalRecommendations,
+          'created_at': FieldValue.serverTimestamp(),
+          // Update timestamp to reflect modification
+        });
+      } else {
+        // If no plan exists, create a new document
+        await dietPlansCollection.add({
+          'user_id': userId,
+          'user_profile': userProfile.toMap(),
+          'weekly_meal_plan': weeklyMealPlan,
+          'nutrition_tips': generalRecommendations,
+          'created_at': FieldValue.serverTimestamp(),
+        });
+      }
+    } else {
+      // Handle case when user is not authenticated
+      throw Exception('User not authenticated');
+    }
   }
 }

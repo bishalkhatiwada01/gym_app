@@ -46,6 +46,7 @@ class PostDataSource {
 
       return querySnapshot.docs
           .map((doc) => PostDataModel.fromJson({
+                // ignore: unnecessary_cast
                 ...doc.data() as Map<String, dynamic>,
                 'postId': doc.id,
               }))

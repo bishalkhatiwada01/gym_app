@@ -1,13 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gymapp/features/dashboard/home_page.dart';
 import 'package:gymapp/features/posts/data/post_data_model.dart';
-import 'package:gymapp/features/posts/data/post_data_source.dart';
 import 'package:gymapp/features/posts/pages/edit_post_page.dart';
-import 'package:gymapp/features/posts/pages/post_page.dart';
-import 'package:gymapp/shared/helper.dart';
-import 'package:gymapp/features/posts/data/post_data_source.dart';
 
 class EditDeleteLogic {
   static void editPost(

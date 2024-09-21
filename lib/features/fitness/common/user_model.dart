@@ -16,4 +16,16 @@ class UserProfile {
     required this.gender,
     this.targetWeight,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'age': age,
+      'weight': weight,
+      'height': height,
+      'fitnessLevel': fitnessLevel,
+      'goal': goal,
+      'gender': gender,
+      'targetWeight': targetWeight,
+    };
+  }
 }

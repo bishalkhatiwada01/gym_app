@@ -7,8 +7,8 @@ class EditDeleteButtons extends StatelessWidget {
   const EditDeleteButtons({
     required this.onEditPressed,
     required this.onDeletePressed,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

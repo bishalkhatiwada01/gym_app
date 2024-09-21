@@ -35,13 +35,13 @@ class _HomePageState extends ConsumerState<HomePage> {
     final postData = ref.watch(postProvider);
 
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 230, 240, 255),
+        backgroundColor: const Color.fromARGB(255, 230, 240, 255),
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 230, 240, 255),
-          title: Text("Home Page"),
+          backgroundColor: const Color.fromARGB(255, 230, 240, 255),
+          title: const Text("Home Page"),
           centerTitle: true,
         ),
-        drawer: MyDrawer(),
+        drawer: const MyDrawer(),
         body: SingleChildScrollView(
             child: Column(children: [
           CarouselSlider(
@@ -59,9 +59,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             items: imagesList
                 .map(
                   (item) => Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Card(
-                      margin: EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                         top: 10.0,
                         bottom: 10.0,
                       ),
@@ -71,7 +71,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.all(
+                        borderRadius: const BorderRadius.all(
                           Radius.circular(20.0),
                         ),
                         child: Stack(
