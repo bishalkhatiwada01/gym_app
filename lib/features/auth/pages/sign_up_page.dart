@@ -5,7 +5,7 @@ import 'package:gymapp/common/widgets/my_password_textfield.dart';
 import 'package:gymapp/common/widgets/my_textfield.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
 import 'package:gymapp/features/auth/services/auth_service.dart';
-import 'package:gymapp/features/auth/services/status_page.dart';
+
 import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -43,115 +43,107 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 240, 255),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const LoginPage()));
-          },
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.transparent,
-            ),
-            padding: EdgeInsets.all(10.sp),
-            child: Icon(
-              Icons.arrow_back,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue[200]!,
+              Colors.purple[200]!,
+            ],
           ),
         ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30.sp),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                // Icon
-                Icon(
-                  Icons.fitness_center_sharp,
-                  size: 80,
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                ),
-                Text(
-                  'Lets Get Started!!',
-                  style: TextStyle(
-                    fontSize: 20.sp,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.sp),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Icon
+                  Icon(
+                    Icons.fitness_center_sharp,
+                    size: 80,
+                    color: Theme.of(context).colorScheme.inversePrimary,
                   ),
-                ),
-                SizedBox(height: 25.h),
+                  Text(
+                    'Lets Get Started!!',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                    ),
+                  ),
+                  SizedBox(height: 25.h),
 
-                // username textfield
-                MyTextField(
-                  hintText: 'Username',
-                  obscureText: false,
-                  controller: usernameController,
-                ),
-                SizedBox(height: 10.h),
+                  // username textfield
+                  MyTextField(
+                    hintText: 'Username',
+                    obscureText: false,
+                    controller: usernameController,
+                  ),
+                  SizedBox(height: 10.h),
 
-                // email textfield
-                MyTextField(
-                  hintText: 'Email',
-                  obscureText: false,
-                  controller: emailController,
-                ),
-                SizedBox(height: 10.h),
+                  // email textfield
+                  MyTextField(
+                    hintText: 'Email',
+                    obscureText: false,
+                    controller: emailController,
+                  ),
+                  SizedBox(height: 10.h),
 
-                // password textfield
+                  // password textfield
 
-                MyPasswordTextField(
-                  hintText: 'Password',
-                  obscureText: true,
-                  controller: passwordController,
-                ),
+                  MyPasswordTextField(
+                    hintText: 'Password',
+                    obscureText: true,
+                    controller: passwordController,
+                  ),
 
-                SizedBox(height: 10.h),
+                  SizedBox(height: 10.h),
 
-                // confirm password textfield
-                MyPasswordTextField(
-                  hintText: 'Confirm Password',
-                  obscureText: true,
-                  controller: confirmPwController,
-                ),
-                SizedBox(height: 10.h),
+                  // confirm password textfield
+                  MyPasswordTextField(
+                    hintText: 'Confirm Password',
+                    obscureText: true,
+                    controller: confirmPwController,
+                  ),
+                  SizedBox(height: 30.h),
 
-                // register button
-                MyButton(
-                  text: 'Register',
-                  onTap: _register,
-                ),
-                SizedBox(height: 25.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account?',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary,
+                  // register button
+                  MyButton(
+                    text: 'Register',
+                    onTap: _register,
+                  ),
+                  SizedBox(height: 15.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Already have an account?',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
-                      },
-                      child: const Text('Login Here',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )),
-                    ),
-                  ],
-                )
-              ],
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()));
+                        },
+                        child: const Text('Login Here',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

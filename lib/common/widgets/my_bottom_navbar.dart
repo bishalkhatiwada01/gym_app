@@ -10,10 +10,9 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      elevation: 0,
-      backgroundColor: const Color.fromARGB(255, 230, 240, 255),
+      backgroundColor: const Color.fromARGB(255, 178, 118, 188),
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: const Color.fromARGB(255, 81, 140, 153),
+      selectedItemColor: const Color.fromARGB(255, 215, 237, 243),
       unselectedItemColor: Theme.of(context).colorScheme.inversePrimary,
       currentIndex: selectedIndex,
       onTap: onTap,
@@ -37,9 +36,9 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.fitness_center_outlined,
+            Icons.subscriptions_outlined,
           ),
-          label: 'Workout',
+          label: 'Plans',
         ),
       ],
     );

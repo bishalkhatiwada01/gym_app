@@ -1,12 +1,14 @@
-import 'dart:ui'; // Import for the BackdropFilter
+import 'dart:math';
+import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:gymapp/features/fitness/workout_plan/data/workout_repository.dart';
 import 'package:gymapp/features/fitness/workout_plan/data/workout_sample_data.dart';
-import 'package:gymapp/features/payment/pages/khalti_payment_page.dart';
+import 'package:gymapp/features/payment/pages/payment_page.dart';
 
 class ResultPage extends StatelessWidget {
   final List<DailyWorkout> weeklyWorkout;
@@ -47,20 +49,18 @@ class ResultPage extends StatelessWidget {
           gender: gender,
           targetWeight: targetWeight,
         );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Workout plan saved successfully!')),
-        );
+        if (kDebugMode) {
+          print('Workout plan saved successfully! $e');
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Please log in to save your workout plan.')),
-        );
+        if (kDebugMode) {
+          print("User not logged in. $e");
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Error saving workout plan. Please try again.')),
-      );
+      if (kDebugMode) {
+        print('Error saving workout plan: $e');
+      }
     }
   }
 
@@ -74,97 +74,120 @@ class ResultPage extends StatelessWidget {
     );
   }
 
+  final _primaryColor = const Color.fromARGB(255, 155, 128, 194);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  _primaryColor,
+                  const Color.fromARGB(255, 235, 176, 176)
+                ],
+              ),
+            ),
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: Container(
+                color: const Color.fromARGB(255, 251, 251, 251).withOpacity(0)),
+          ),
           // Background content
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
+          Opacity(
+            opacity: 0.1,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Card(
+                    child: Text(
+                      'Age: $age, Weight: ${weight}kg, Height: ${height}cm\n'
+                      'Fitness Level: $fitnessLevel, Goal: $goal, Gender: $gender',
+                      style: Theme.of(context).textTheme.titleSmall,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: weeklyWorkout.length,
+                    itemBuilder: (context, dayIndex) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: ExpansionTile(
+                          title: Text(
+                            '${weeklyWorkout[dayIndex].day} - ${weeklyWorkout[dayIndex].focusArea}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            'Calories Burned: ${weeklyWorkout[dayIndex].totalCalories.toStringAsFixed(1)} kcal',
+                            style: const TextStyle(color: Colors.green),
+                          ),
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount:
+                                  weeklyWorkout[dayIndex].exercises.length,
+                              itemBuilder: (context, exerciseIndex) {
+                                final exercise = weeklyWorkout[dayIndex]
+                                    .exercises[exerciseIndex];
+                                return Card(
+                                  margin: const EdgeInsets.all(8.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          exercise.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(exercise.instruction),
+                                        const SizedBox(height: 8),
+                                        Text('Sets: ${exercise.sets}'),
+                                        Text('Reps: ${exercise.reps}'),
+                                        Text(
+                                            'Duration: ${exercise.duration.inMinutes}m ${exercise.duration.inSeconds % 60}s'),
+                                        Text(
+                                          'Estimated Calories: ${exercise.totalCalories.toStringAsFixed(1)} kcal',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Age: $age, Weight: ${weight}kg, Height: ${height}cm\n'
-                    'Fitness Level: $fitnessLevel, Goal: $goal, Gender: $gender',
-                    style: Theme.of(context).textTheme.titleSmall,
+                    'Total Weekly Calories Burned: ${weeklyWorkout.fold(0.0, (sum, day) => sum + day.totalCalories).toStringAsFixed(1)} kcal',
+                    style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center,
                   ),
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: weeklyWorkout.length,
-                  itemBuilder: (context, dayIndex) {
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
-                      child: ExpansionTile(
-                        title: Text(
-                          '${weeklyWorkout[dayIndex].day} - ${weeklyWorkout[dayIndex].focusArea}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          'Calories Burned: ${weeklyWorkout[dayIndex].totalCalories.toStringAsFixed(1)} kcal',
-                          style: const TextStyle(color: Colors.green),
-                        ),
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: weeklyWorkout[dayIndex].exercises.length,
-                            itemBuilder: (context, exerciseIndex) {
-                              final exercise = weeklyWorkout[dayIndex]
-                                  .exercises[exerciseIndex];
-                              return Card(
-                                margin: const EdgeInsets.all(8.0),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        exercise.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(exercise.instruction),
-                                      const SizedBox(height: 8),
-                                      Text('Sets: ${exercise.sets}'),
-                                      Text('Reps: ${exercise.reps}'),
-                                      Text(
-                                          'Duration: ${exercise.duration.inMinutes}m ${exercise.duration.inSeconds % 60}s'),
-                                      Text(
-                                        'Estimated Calories: ${exercise.totalCalories.toStringAsFixed(1)} kcal',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Total Weekly Calories Burned: ${weeklyWorkout.fold(0.0, (sum, day) => sum + day.totalCalories).toStringAsFixed(1)} kcal',
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           Positioned(

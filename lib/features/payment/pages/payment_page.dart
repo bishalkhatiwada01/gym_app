@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PaymentPage extends ConsumerStatefulWidget {
-  const PaymentPage({Key? key}) : super(key: key);
+  const PaymentPage({super.key});
 
   @override
   ConsumerState<PaymentPage> createState() => _PaymentPageState();
@@ -246,7 +246,9 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
     }).then((_) {
       _showSuccessDialog();
     }).catchError((error) {
-      print("Failed to add subscription: $error");
+      if (kDebugMode) {
+        print("Failed to add subscription: $error");
+      }
     });
   }
 

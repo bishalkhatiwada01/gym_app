@@ -39,94 +39,108 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 240, 255),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(25.sp),
-          child: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.fitness_center_sharp,
-                    size: 80,
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                  ),
-                  Text(
-                    'Welcome Back to GYM!!',
-                    style: TextStyle(
-                      fontSize: 20.sp,
+      body: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue[200]!,
+              Colors.purple[200]!,
+            ],
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(25.sp),
+            child: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.fitness_center_sharp,
+                      size: 80,
+                      color: Theme.of(context).colorScheme.inversePrimary,
                     ),
-                  ),
-                  SizedBox(height: 45.h),
-                  MyTextField(
-                    hintText: 'Email',
-                    obscureText: false,
-                    controller: emailController,
-                  ),
-                  SizedBox(height: 25.h),
-                  MyPasswordTextField(
-                    hintText: 'Password',
-                    obscureText: true,
-                    controller: passwordController,
-                  ),
-                  SizedBox(height: 10.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const ForgotPasswordPage()));
-                        },
-                        child: Text(
-                          'Forgot Password?',
+                    Text(
+                      'Welcome Back to FITNESS APP!!',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                      ),
+                    ),
+                    SizedBox(height: 45.h),
+                    MyTextField(
+                      hintText: 'Email',
+                      obscureText: false,
+                      controller: emailController,
+                    ),
+                    SizedBox(height: 25.h),
+                    MyPasswordTextField(
+                      hintText: 'Password',
+                      obscureText: true,
+                      controller: passwordController,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgotPasswordPage()));
+                          },
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.h),
+                    MyButton(
+                      text: 'Login',
+                      onTap: () async {
+                        if (formKey.currentState!.validate()) {
+                          await _login();
+                        }
+                      },
+                    ),
+                    SizedBox(height: 15.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Dont have an account?',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.inversePrimary,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 25.h),
-                  MyButton(
-                    text: 'Login',
-                    onTap: () async {
-                      if (formKey.currentState!.validate()) {
-                        await _login();
-                      }
-                    },
-                  ),
-                  SizedBox(height: 25.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Dont have an account?',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.inversePrimary,
+                        SizedBox(
+                          width: 10.w,
                         ),
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const RegisterPage()));
-                        },
-                        child: const Text('Register Here',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ),
-                    ],
-                  ),
-                ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegisterPage()));
+                          },
+                          child: const Text('Register Here',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

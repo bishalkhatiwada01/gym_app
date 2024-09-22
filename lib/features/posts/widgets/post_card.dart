@@ -39,129 +39,143 @@ class PostCard extends ConsumerWidget {
         elevation: 0.0,
         margin: const EdgeInsets.all(10.0),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(10.0),
         ),
-        child: SizedBox(
-          width: 300,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    userById.when(
-                      data: (userData) {
-                        return CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(
-                            userData.profileImageUrl ?? '',
-                          ),
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return const Icon(Icons.error);
-                      },
-                      loading: () => const CircularProgressIndicator(),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          userById.when(
-                            data: (userData) {
-                              return Text(
-                                userData.name ?? 'User Name',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              );
-                            },
-                            error: (error, stackTrace) {
-                              return const Text('Error loading name');
-                            },
-                            loading: () => const Text('Loading...'),
-                          ),
-                          Text(
-                            "Posted ${timeAgo(DateTime.parse(postData.postCreatedAt))}",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 20,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Text(
-                        postData.postHeadline,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 40,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Text(
-                        postData.postContent,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                child: postData.postImageUrl.isNotEmpty
-                    ? Image.network(
-                        postData.postImageUrl,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        height: 200,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(
-                            child: Text(
-                              'Error loading image!',
-                              style: TextStyle(color: Colors.red),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.blue[200]!,
+                Colors.purple[200]!,
+              ],
+            ),
+          ),
+          child: SizedBox(
+            width: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      userById.when(
+                        data: (userData) {
+                          return CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(
+                              userData.profileImageUrl ?? '',
                             ),
                           );
                         },
-                      )
-                    : Image.asset(
-                        'assets/no_image.jpg',
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        height: 150,
+                        error: (error, stackTrace) {
+                          return const Icon(Icons.error);
+                        },
+                        loading: () => const CircularProgressIndicator(),
                       ),
-              ),
-            ],
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            userById.when(
+                              data: (userData) {
+                                return Text(
+                                  userData.name ?? 'User Name',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                );
+                              },
+                              error: (error, stackTrace) {
+                                return const Text('Error loading name');
+                              },
+                              loading: () => const Text('Loading...'),
+                            ),
+                            Text(
+                              "Posted ${timeAgo(DateTime.parse(postData.postCreatedAt))}",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 20,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          postData.postHeadline,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          postData.postContent,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                  child: postData.postImageUrl.isNotEmpty
+                      ? Image.network(
+                          postData.postImageUrl,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          height: 200,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Text(
+                                'Error loading image!',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/no_image.jpg',
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          height: 150,
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

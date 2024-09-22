@@ -17,27 +17,41 @@ class MyCardProfile extends StatelessWidget {
     return Card(
       color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: ListTile(
-        leading: Icon(
-          Icons.privacy_tip_sharp,
-          color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.8),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue[100]!,
+              Colors.purple[100]!,
+            ],
+          ),
         ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        child: ListTile(
+          leading: Icon(
+            Icons.privacy_tip_sharp,
             color:
                 Theme.of(context).colorScheme.inversePrimary.withOpacity(0.8),
           ),
-        ),
-        trailing: IconButton(
-          icon: Icon(
-            Icons.arrow_forward_ios_outlined,
-            color:
-                Theme.of(context).colorScheme.inversePrimary.withOpacity(0.8),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color:
+                  Theme.of(context).colorScheme.inversePrimary.withOpacity(0.9),
+            ),
           ),
-          onPressed: onPressed,
+          trailing: IconButton(
+            icon: Icon(
+              Icons.arrow_forward_ios_outlined,
+              color:
+                  Theme.of(context).colorScheme.inversePrimary.withOpacity(0.8),
+            ),
+            onPressed: onPressed,
+          ),
         ),
       ),
     );

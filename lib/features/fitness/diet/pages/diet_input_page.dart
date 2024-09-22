@@ -22,170 +22,152 @@ class _DietInputPageState extends State<DietInputPage> {
   String _gender = 'Male';
   String _targetWeight = '';
 
+  final _primaryColor = const Color.fromARGB(255, 155, 128, 194);
+  final _accentColor = const Color.fromARGB(255, 72, 141, 231);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('INPUT PHYSICAL STATUS'),
-        centerTitle: true,
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: <Widget>[
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Age'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your age';
-                }
-                return null;
-              },
-              onSaved: (value) => _age = value!,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Weight (kg)'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your weight';
-                }
-                return null;
-              },
-              onSaved: (value) => _weight = value!,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Height (cm)'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your height';
-                }
-                return null;
-              },
-              onSaved: (value) => _height = value!,
-            ),
-            DropdownButtonFormField<String>(
-              value: _fitnessLevel,
-              decoration: const InputDecoration(labelText: 'Fitness Level'),
-              items: ['Beginner', 'Intermediate', 'Advanced']
-                  .map((label) => DropdownMenuItem(
-                        value: label,
-                        child: Text(label),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _fitnessLevel = value!;
-                });
-              },
-            ),
-            DropdownButtonFormField<String>(
-              value: _goal,
-              decoration: const InputDecoration(labelText: 'Your Goal'),
-              items: ['Weight Loss', 'Muscle Gain', 'General Fitness']
-                  .map((label) => DropdownMenuItem(
-                        value: label,
-                        child: Text(label),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _goal = value!;
-                });
-              },
-            ),
-            if (_goal == 'Weight Loss')
-              TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Target Weight (kg)'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your target weight';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _targetWeight = value!,
-              ),
-            DropdownButtonFormField<String>(
-              value: _gender,
-              decoration: const InputDecoration(labelText: 'Gender'),
-              items: ['Male', 'Female']
-                  .map((label) => DropdownMenuItem(
-                        value: label,
-                        child: Text(label),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _gender = value!;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              child: const Text(
-                'Generate Diet Plan and Continue',
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  final userProfile = UserProfile(
-                    age: int.parse(_age),
-                    weight: double.parse(_weight),
-                    height: double.parse(_height),
-                    fitnessLevel: _fitnessLevel,
-                    goal: _goal,
-                    gender: _gender,
-                    targetWeight: _goal == 'Weight Loss'
-                        ? double.parse(_targetWeight)
-                        : null,
-                  );
-
-                  // Generate diet recommendation
-                  final dietRecommendation = DietRecommendation(userProfile);
-                  final weeklyMealPlan =
-                      dietRecommendation.generateWeeklyMealPlan();
-
-                  final generalRecommendations =
-                      dietRecommendation.generateNutritionalTips();
-
-                  // Upload to Firebase
-                  try {
-                    await _uploadToFirebase(
-                        userProfile, weeklyMealPlan, generalRecommendations);
-
-                    // Navigate to NutritionInputPage
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NutritionInputPage(
-                          age: _age,
-                          weight: _weight,
-                          height: _height,
-                          fitnessLevel: _fitnessLevel,
-                          goal: _goal,
-                          gender: _gender,
-                          targetWeight: _targetWeight,
-                        ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [_primaryColor, const Color.fromARGB(255, 235, 176, 176)],
+          ),
+        ),
+        child: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(24.0),
+              children: <Widget>[
+                const Text(
+                  'Create Your Personalized Plan!',
+                  style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromARGB(255, 166, 145, 196),
+                          Color.fromARGB(255, 222, 177, 177)
+                        ],
                       ),
-                    );
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: ${e.toString()}')),
-                    );
-                  }
-                }
-              },
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          _buildInputField(
+                              'Age', _age, (value) => _age = value),
+                          _buildInputField('Weight (kg)', _weight,
+                              (value) => _weight = value),
+                          _buildInputField('Height (cm)', _height,
+                              (value) => _height = value),
+                          _buildDropdown(
+                              'Fitness Level',
+                              _fitnessLevel,
+                              ['Beginner', 'Intermediate', 'Advanced'],
+                              (value) =>
+                                  setState(() => _fitnessLevel = value!)),
+                          _buildDropdown(
+                              'Your Goal',
+                              _goal,
+                              ['Weight Loss', 'Muscle Gain', 'General Fitness'],
+                              (value) => setState(() => _goal = value!)),
+                          if (_goal == 'Weight Loss')
+                            _buildInputField(
+                                'Target Weight (kg)',
+                                _targetWeight,
+                                (value) => _targetWeight = value),
+                          _buildDropdown('Gender', _gender, ['Male', 'Female'],
+                              (value) => setState(() => _gender = value!)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: _accentColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: _submitForm,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Text('Generate Diet Plan',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        )),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
+  }
+
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final userProfile = UserProfile(
+        age: int.parse(_age),
+        weight: double.parse(_weight),
+        height: double.parse(_height),
+        fitnessLevel: _fitnessLevel,
+        goal: _goal,
+        gender: _gender,
+        targetWeight:
+            _goal == 'Weight Loss' ? double.parse(_targetWeight) : null,
+      );
+
+      final dietRecommendation = DietRecommendation(userProfile);
+      final weeklyMealPlan = dietRecommendation.generateWeeklyMealPlan();
+      final generalRecommendations =
+          dietRecommendation.generateNutritionalTips();
+
+      try {
+        await _uploadToFirebase(
+            userProfile, weeklyMealPlan, generalRecommendations);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NutritionInputPage(
+              age: _age,
+              weight: _weight,
+              height: _height,
+              fitnessLevel: _fitnessLevel,
+              goal: _goal,
+              gender: _gender,
+              targetWeight: _targetWeight,
+            ),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   Future<void> _uploadToFirebase(
@@ -194,32 +176,23 @@ class _DietInputPageState extends State<DietInputPage> {
     List<String> generalRecommendations,
   ) async {
     final user = FirebaseAuth.instance.currentUser;
-
     if (user != null) {
-      // Get the current user's UID
       final userId = user.uid;
-
-      // Reference to the diet_plans collection
       final dietPlansCollection =
           FirebaseFirestore.instance.collection('diet_plans');
-
-      // Query to check if a diet plan already exists for the user
       final existingPlan = await dietPlansCollection
           .where('user_id', isEqualTo: userId)
           .limit(1)
           .get();
 
       if (existingPlan.docs.isNotEmpty) {
-        // If a diet plan already exists, update the document with the new data
         await dietPlansCollection.doc(existingPlan.docs[0].id).update({
           'user_profile': userProfile.toMap(),
           'weekly_meal_plan': weeklyMealPlan,
           'nutrition_tips': generalRecommendations,
           'created_at': FieldValue.serverTimestamp(),
-          // Update timestamp to reflect modification
         });
       } else {
-        // If no plan exists, create a new document
         await dietPlansCollection.add({
           'user_id': userId,
           'user_profile': userProfile.toMap(),
@@ -229,8 +202,63 @@ class _DietInputPageState extends State<DietInputPage> {
         });
       }
     } else {
-      // Handle case when user is not authenticated
       throw Exception('User not authenticated');
     }
+  }
+
+  Widget _buildInputField(
+      String label, String? value, Function(String) onSaved) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: _primaryColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: _accentColor, width: 2),
+          ),
+        ),
+        initialValue: value,
+        keyboardType: TextInputType.number,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $label';
+          }
+          return null;
+        },
+        onSaved: (value) => onSaved(value!),
+      ),
+    );
+  }
+
+  Widget _buildDropdown(String label, String value, List<String> items,
+      Function(String?) onChanged) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: DropdownButtonFormField<String>(
+        value: value,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: _primaryColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: _accentColor, width: 2),
+          ),
+        ),
+        items: items
+            .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+            .toList(),
+        onChanged: onChanged,
+      ),
+    );
   }
 }

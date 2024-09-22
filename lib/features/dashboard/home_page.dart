@@ -35,164 +35,171 @@ class _HomePageState extends ConsumerState<HomePage> {
     final postData = ref.watch(postProvider);
 
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 230, 240, 255),
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 230, 240, 255),
-          title: const Text("Home Page"),
-          centerTitle: true,
-        ),
-        drawer: const MyDrawer(),
-        body: SingleChildScrollView(
-            child: Column(children: [
-          CarouselSlider(
-            options: CarouselOptions(
-              autoPlay: true,
-              enlargeCenterPage: true,
-              onPageChanged: (index, reason) {
-                setState(
-                  () {
-                    _currentIndex = index;
-                  },
-                );
-              },
-            ),
-            items: imagesList
-                .map(
-                  (item) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      margin: const EdgeInsets.only(
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      elevation: 4.0,
-                      shadowColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(20.0),
-                        ),
-                        child: Stack(
-                          children: <Widget>[
-                            Image.network(
-                              item,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 500.h,
-                            ),
-                            Positioned(
-                              left: 10,
-                              bottom: 10,
-                              child: Text(
-                                titles[_currentIndex],
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.surface,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .inversePrimary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
+      appBar: AppBar(
+        backgroundColor: Colors.blue[300]!,
+        title: Text(
+          "HOME",
+          style: TextStyle(
+            letterSpacing: 2,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 28.sp,
+            shadows: [
+              Shadow(
+                blurRadius: 10.0,
+                color: Colors.black.withOpacity(0.1),
+                offset: const Offset(2.0, 2.0),
+              ),
+            ],
           ),
-          SizedBox(height: 15.h),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '     Posts',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ],
+        ),
+        centerTitle: true,
+      ),
+      drawer: const MyDrawer(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue[300]!,
+              Colors.purple[300]!,
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    setState(
+                      () {
+                        _currentIndex = index;
+                      },
+                    );
+                  },
                 ),
-                SizedBox(
-                  height: 300.6.h,
-                  width: double.infinity,
-                  child: postData.when(
-                    data: (data) {
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return SizedBox(
-                            width: 350.w,
-                            child: SmallPostCard(
-                              postData: data[index],
+                items: imagesList
+                    .map(
+                      (item) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          margin: const EdgeInsets.only(
+                            top: 10.0,
+                            bottom: 10.0,
+                          ),
+                          elevation: 4.0,
+                          shadowColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(20.0),
                             ),
+                            child: Stack(
+                              children: <Widget>[
+                                Image.network(
+                                  item,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: 500.h,
+                                ),
+                                Positioned(
+                                  left: 10,
+                                  bottom: 10,
+                                  child: Text(
+                                    titles[_currentIndex],
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.surface,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .inversePrimary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+              SizedBox(height: 15.h),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '     Posts',
+                          style: TextStyle(
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 300.6.h,
+                      width: double.infinity,
+                      child: postData.when(
+                        data: (data) {
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return SizedBox(
+                                width: 350.w,
+                                child: SmallPostCard(
+                                  postData: data[index],
+                                ),
+                              );
+                            },
+                            itemCount: data.length,
                           );
                         },
-                        itemCount: data.length,
-                      );
-                    },
-                    error: (error, stack) => const Center(
-                      child: Text('Error'),
+                        error: (error, stack) => const Center(
+                          child: Text('Error'),
+                        ),
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
                     ),
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '     Workout Plans',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600),
+                    SizedBox(height: 10.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '     Workout Plans',
+                          style: TextStyle(
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                // SizedBox(
-                //   height: 220.h,
-                //   width: double.infinity,
-                //   child: postData.when(
-                //     data: (data) {
-                //       return ListView.builder(
-                //         scrollDirection: Axis.horizontal,
-                //         itemBuilder: (context, index) {
-                //           return SizedBox(
-                //             width: 190.w,
-                //             child: SmallPostCard(
-                //               postData: data[index],
-                //             ),
-                //           );
-                //         },
-                //         itemCount: data.length,
-                //       );
-                //     },
-                //     error: (error, stack) => const Center(
-                //       child: Text('Error'),
-                //     ),
-                //     loading: () => const Center(
-                //       child: CircularProgressIndicator(),
-                //     ),
-                //   ),
-                // ),
-                SizedBox(height: 10.h),
-                SizedBox(height: 15.h),
-              ],
-            ),
-          )
-        ])));
+              ),
+              const SizedBox(
+                height: 200,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

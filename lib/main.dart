@@ -8,8 +8,7 @@ import 'package:gymapp/common/themes/light_theme.dart';
 import 'package:gymapp/common/widgets/my_bottom_navbar.dart';
 import 'package:gymapp/features/auth/services/status_page.dart';
 import 'package:gymapp/features/dashboard/home_page.dart';
-import 'package:gymapp/features/dashboard/workout_question_page.dart';
-import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
+import 'package:gymapp/features/fitness/common/combined_page.dart';
 import 'package:gymapp/features/posts/pages/post_page.dart';
 import 'package:gymapp/features/profile/pages/profile_page.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return SafeArea(
           child: KhaltiScope(
-            publicKey: 'test_public_key_49536e9f1a424b6fa5c79d0b85b765f6',
+            publicKey: 'be7e1c4fb641490181b25142e49efe15',
             enabledDebugging: true,
             builder: (context, navigatorKey) {
               return MaterialApp(
@@ -63,37 +62,29 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+final selectedIndexProvider = StateProvider<int>((ref) => 0);
 
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
+class MainPage extends ConsumerWidget {
+  MainPage({super.key});
 
-class _MainPageState extends State<MainPage> {
-  final _pages = [
+  final List<Widget> _pages = [
     const HomePage(),
     const PostPage(),
     const ProfilePage(),
-    const WorkoutQuestionsPage(),
+    const CombinedPage(),
   ];
 
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIndex = ref.watch(selectedIndexProvider);
+
     return Scaffold(
       bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        selectedIndex: selectedIndex,
+        onTap: (index) =>
+            ref.read(selectedIndexProvider.notifier).state = index,
       ),
-      body: _pages[_selectedIndex],
+      body: _pages[selectedIndex],
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
-import 'package:gymapp/features/auth/pages/sign_up_page.dart';
 import 'package:gymapp/main.dart';
 
 class StatusPage extends StatelessWidget {
@@ -15,9 +14,9 @@ class StatusPage extends StatelessWidget {
         builder: (context, snapshot) {
           // user is logged in
           if (snapshot.hasData) {
-            return const MainPage();
+            return MainPage();
           } else {
-            return RegisterPage();
+            return const LoginPage();
           }
 
           // user is not logged in

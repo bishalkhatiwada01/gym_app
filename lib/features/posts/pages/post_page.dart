@@ -24,39 +24,65 @@ class _PostPageState extends ConsumerState<PostPage> {
     final postData = ref.watch(postProvider);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 230, 240, 255),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 230, 240, 255),
-        title: const Text("POSTS"),
+        backgroundColor: Colors.blue[300]!,
+        title: Text(
+          "POSTS",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 26.sp,
+            letterSpacing: 2,
+            shadows: [
+              Shadow(
+                blurRadius: 10.0,
+                color: Colors.black.withOpacity(0.1),
+                offset: const Offset(2.0, 2.0),
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
       ),
       drawer: const MyDrawer(),
-      body: postData.when(
-        data: (data) {
-          return data.isEmpty
-              ? Center(
-                  child: Text(
-                  'No Posts',
-                  style: TextStyle(fontSize: 20.sp),
-                ))
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    ref.refresh(postProvider);
-                    ref.refresh(userProvider);
-                  },
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      return PostCard(
-                        postData: data[index],
-                      );
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue[300]!,
+              Colors.purple[300]!,
+            ],
+          ),
+        ),
+        child: postData.when(
+          data: (data) {
+            return data.isEmpty
+                ? Center(
+                    child: Text(
+                    'No Posts',
+                    style: TextStyle(fontSize: 20.sp),
+                  ))
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      ref.refresh(postProvider);
+                      ref.refresh(userProvider);
                     },
-                    itemCount: data.length,
-                  ),
-                );
-        },
-        error: (error, stackTrace) => Text(error.toString()),
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return PostCard(
+                          postData: data[index],
+                        );
+                      },
+                      itemCount: data.length,
+                    ),
+                  );
+          },
+          error: (error, stackTrace) => Text(error.toString()),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -67,11 +93,15 @@ class _PostPageState extends ConsumerState<PostPage> {
                 builder: (context) => const CreatePostPage(),
               ));
         },
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.sp),
+          side: const BorderSide(width: 4),
+        ),
+        backgroundColor: Colors.white,
         child: Icon(
           Icons.add,
-          size: 20.w,
-          color: Theme.of(context).colorScheme.primary,
+          size: 30.w,
+          color: Colors.black,
         ),
       ),
     );

@@ -2,15 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/bmi/screens/input_screen.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
-import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
-import 'package:gymapp/features/payment/pages/khalti_payment_page.dart';
 import 'package:gymapp/features/payment/pages/payment_history_page.dart';
-import 'package:gymapp/features/profile/pages/profile_page.dart';
+import 'package:gymapp/features/profile/data/user_service.dart';
+import 'package:gymapp/main.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends ConsumerWidget {
   const MyDrawer({
     super.key,
   });
@@ -61,7 +61,9 @@ class MyDrawer extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userDataAsyncValue = ref.watch(userProvider);
+
     Future<String> userSignout() async {
       try {
         await FirebaseAuth.instance.signOut();
@@ -73,178 +75,194 @@ class MyDrawer extends StatelessWidget {
 
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      child: Column(
-        children: [
-          // drawer header
-          DrawerHeader(
-            child: Icon(
-              Icons.favorite,
-              color: Theme.of(context).colorScheme.inversePrimary,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue[300]!,
+              Colors.purple[300]!,
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20.h,
             ),
-          ),
 
-          SizedBox(
-            height: 15.h,
-          ),
-
-          // home tile
-          Padding(
-            padding: EdgeInsets.only(left: 20.w),
-            child: ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text(
-                'HOME',
-                style: TextStyle(fontSize: 14, letterSpacing: 4),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-
-          // profile tile
-          Padding(
-            padding: EdgeInsets.only(left: 20.w),
-            child: ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text(
-                'PROFILE',
-                style: TextStyle(fontSize: 14, letterSpacing: 4),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+            userDataAsyncValue.when(
+              data: (userData) {
+                return DrawerHeader(
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.black,
+                        child: userData.profileImageUrl == null
+                            ? const CircleAvatar(
+                                radius: 50,
+                                backgroundImage: AssetImage("assets/user.png"),
+                              )
+                            : CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                  userData.profileImageUrl!,
+                                ),
+                              ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userData.username,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 25.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              userData.email,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
-            ),
-          ),
-
-          // BMI Calculator tile
-          Padding(
-            padding: EdgeInsets.only(left: 20.w),
-            child: ListTile(
-              leading: const Icon(Icons.calculate),
-              title: const Text(
-                'BMI CALCULATOR',
-                style: TextStyle(fontSize: 14, letterSpacing: 4),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const InputScreen()),
-                );
+              error: (error, stackTrace) {
+                return Center(child: Text('Error: $error'));
               },
-            ),
-          ),
-
-          // Workout Plan tile
-          Padding(
-            padding: EdgeInsets.only(left: 20.w),
-            child: ListTile(
-              leading: const Icon(Icons.fitness_center),
-              title: const Text(
-                'MY PLANS',
-                style: TextStyle(fontSize: 14, letterSpacing: 4),
+              loading: () => const Center(
+                child: CircularProgressIndicator(),
               ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => const DietInputPage()),
-                );
-              },
             ),
-          ),
-
-          // Payment tile
-          Padding(
-            padding: EdgeInsets.only(left: 20.w),
-            child: ListTile(
-              leading: const Icon(Icons.monetization_on),
-              title: const Text(
-                'PAYMENT',
-                style: TextStyle(fontSize: 14, letterSpacing: 4),
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text(
+                  'HOME',
+                  style: TextStyle(fontSize: 14, letterSpacing: 4),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
               ),
-              onTap: () async {
-                Navigator.pop(context); // Close the drawer
+            ),
 
-                // Show loading indicator
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return const AlertDialog(
-                      content: Center(child: CircularProgressIndicator()),
-                    );
-                  },
-                );
+            // profile tile
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: ListTile(
+                leading: const Icon(Icons.person),
+                title: const Text(
+                  'PROFILE',
+                  style: TextStyle(fontSize: 14, letterSpacing: 4),
+                ),
+                onTap: () {
+                  ref.read(selectedIndexProvider.notifier).state =
+                      2; // Assuming ProfilePage is at index 2
+                  Navigator.pop(context);
+                },
+              ),
+            ),
 
-                try {
-                  bool paymentCompleted = await checkPaymentStatus();
-                  Navigator.pop(context); // Close loading dialog
+            // BMI Calculator tile
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: ListTile(
+                leading: const Icon(Icons.calculate),
+                title: const Text(
+                  'BMI CALCULATOR',
+                  style: TextStyle(
+                    fontSize: 14,
+                    letterSpacing: 4,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const InputScreen()),
+                  );
+                },
+              ),
+            ),
 
-                  if (paymentCompleted) {
-                    showPaymentCompletedDialog(context);
-                  } else {
-                    Navigator.of(context).push(
+            // Workout Plan tile
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: ListTile(
+                leading: const Icon(Icons.fitness_center),
+                title: const Text(
+                  'MY PLANS',
+                  style: TextStyle(fontSize: 14, letterSpacing: 4),
+                ),
+                onTap: () {
+                  // Update the selected index to show the CombinedPage
+                  ref.read(selectedIndexProvider.notifier).state =
+                      3; // Assuming CombinedPage is at index 3
+                  Navigator.pop(context); // Close the drawer
+                },
+              ),
+            ),
+
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: ListTile(
+                leading: const Icon(Icons.history),
+                title: const Text(
+                  'PAYMENT HISTORY',
+                  style: TextStyle(fontSize: 14, letterSpacing: 4),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentHistoryPage()),
+                  );
+                },
+              ),
+            ),
+
+            // logout tile
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text(
+                  'LOGOUT',
+                  style: TextStyle(fontSize: 14, letterSpacing: 4),
+                ),
+                onTap: () async {
+                  String result = await userSignout();
+                  if (result == "Success") {
+                    Navigator.pushReplacement(
+                      context,
                       MaterialPageRoute(
-                          builder: (context) => const PaymentPage()),
+                          builder: (context) => const LoginPage()),
                     );
+                  } else {
+                    if (kDebugMode) {
+                      print('Logout Failed');
+                    }
                   }
-                } catch (e) {
-                  Navigator.pop(context); // Close loading dialog
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: ${e.toString()}')),
-                  );
-                }
-              },
-            ),
-          ),
-
-          Padding(
-            padding: EdgeInsets.only(left: 20.w),
-            child: ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text(
-                'PAYMENT HISTORY',
-                style: TextStyle(fontSize: 14, letterSpacing: 4),
+                },
               ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => const PaymentHistoryPage()),
-                );
-              },
             ),
-          ),
-
-          // logout tile
-          Padding(
-            padding: EdgeInsets.only(left: 20.w),
-            child: ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text(
-                'LOGOUT',
-                style: TextStyle(fontSize: 14, letterSpacing: 4),
-              ),
-              onTap: () async {
-                String result = await userSignout();
-                if (result == "Success") {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                } else {
-                  if (kDebugMode) {
-                    print('Logout Failed');
-                  }
-                }
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
