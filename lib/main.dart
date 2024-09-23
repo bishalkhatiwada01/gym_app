@@ -27,15 +27,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      // designSize: const Size(430, 932),
       designSize: const Size(430, 900),
-
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
         return SafeArea(
           child: KhaltiScope(
-            publicKey: 'be7e1c4fb641490181b25142e49efe15',
+            publicKey: 'test_public_key_49536e9f1a424b6fa5c79d0b85b765f6',
             enabledDebugging: true,
             builder: (context, navigatorKey) {
               return MaterialApp(

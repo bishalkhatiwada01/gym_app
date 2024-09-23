@@ -187,7 +187,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           ),
         ),
         child: RefreshIndicator(
-          onRefresh: _refreshData, // Added refresh function
+          onRefresh: _refreshData,
           color: Colors.black,
           child: SafeArea(
             child: CustomScrollView(
@@ -207,7 +207,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                   ? const CircleAvatar(
                                       radius: 60,
                                       backgroundImage:
-                                          AssetImage("assets/user.png"),
+                                          AssetImage("assets/no_image.jpg"),
                                     )
                                   : CircleAvatar(
                                       radius: 60,
@@ -256,13 +256,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 children: [
                                   SizedBox(height: 6.h),
                                   MyCardProfile(
-                                    onPressed: () {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             PaymentHistoryPage()));
-                                    },
+                                    onPressed: () {},
                                     title: 'Payment History',
                                     leading: const Icon(
                                       Icons.history_edu,

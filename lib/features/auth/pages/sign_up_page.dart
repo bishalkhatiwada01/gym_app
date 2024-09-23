@@ -5,6 +5,7 @@ import 'package:gymapp/common/widgets/my_password_textfield.dart';
 import 'package:gymapp/common/widgets/my_textfield.dart';
 import 'package:gymapp/features/auth/pages/login_page.dart';
 import 'package:gymapp/features/auth/services/auth_service.dart';
+import 'package:gymapp/features/auth/services/status_page.dart';
 
 import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
 
@@ -35,7 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const DietInputPage()),
+      MaterialPageRoute(builder: (context) => const StatusPage()),
     );
   }
 

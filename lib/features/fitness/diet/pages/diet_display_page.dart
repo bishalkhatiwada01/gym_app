@@ -1,126 +1,162 @@
-// ignore_for_file: unnecessary_to_list_in_spreads
-
 import 'package:flutter/material.dart';
-import 'package:gymapp/features/fitness/common/user_model.dart';
-import 'package:gymapp/features/fitness/diet/diet_recommendation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gymapp/common/widgets/common_app_bar.dart';
+import 'package:gymapp/features/fitness/diet/data/get_diet_service.dart';
 
-class DietRecommendationPage extends StatelessWidget {
-  final UserProfile userProfile;
-
-  const DietRecommendationPage({
-    super.key,
-    required this.userProfile,
-  });
+class DietDisplayPage extends ConsumerWidget {
+  const DietDisplayPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final dietRecommendation = DietRecommendation(userProfile);
-    final weeklyMealPlan = dietRecommendation.generateWeeklyMealPlan();
-    final nutritionalTips = dietRecommendation.generateNutritionalTips();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dietPlanAsyncValue = ref.watch(dietPlanProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Weekly Diet Plan'),
+      extendBodyBehindAppBar: true,
+      appBar: CenteredAppBarWithBackButton(
+        title: 'Your Diet Plan',
+        onBackPressed: () => Navigator.pop(context),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            Text(
-              'Macronutrient Breakdown:',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            Text(
-                'Protein: ${dietRecommendation.macronutrients['protein']!.round()}g'),
-            Text(
-                'Carbs: ${dietRecommendation.macronutrients['carbs']!.round()}g'),
-            Text(
-                'Fats: ${dietRecommendation.macronutrients['fats']!.round()}g'),
-            const SizedBox(height: 24),
-            Text(
-              'Weekly Meal Plan:',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            ...weeklyMealPlan
-                .map((dayPlan) => _buildDayMealPlan(context, dayPlan))
-                .toList(),
-            const SizedBox(height: 24),
-            Text(
-              'Nutritional Tips for Nepali Diet:',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            ...nutritionalTips
-                .map((tip) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text('• $tip'),
-                    ))
-                .toList(),
-            const SizedBox(height: 24),
-            Text(
-              'Note: This meal plan is a suggestion based on Nepali market availability. '
-              'Please consult with a nutritionist for a personalized diet plan.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue[300]!,
+              Colors.purple[300]!,
+            ],
+          ),
+        ),
+        child: dietPlanAsyncValue.when(
+          data: (dietPlan) {
+            if (dietPlan == null) {
+              return const Center(
+                  child: Text('No diet plan found.',
+                      style: TextStyle(color: Colors.white)));
+            }
+            final weeklyMealPlan = dietPlan.weeklyMealPlan;
+            final nutritionTips = dietPlan.nutritionTips;
+
+            return SingleChildScrollView(
+              padding:
+                  EdgeInsets.fromLTRB(16.w, kToolbarHeight + 16.h, 16.w, 16.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildWeeklyMealPlan(context, weeklyMealPlan),
+                  SizedBox(height: 24.h),
+                  _buildNutritionTips(context, nutritionTips),
+                ],
+              ),
+            );
+          },
+          loading: () => const Center(
+              child: CircularProgressIndicator(color: Colors.white)),
+          error: (error, stack) => Center(
+              child: Text('Error: $error',
+                  style: const TextStyle(color: Colors.white))),
         ),
       ),
     );
   }
 
-  Widget _buildDayMealPlan(BuildContext context, Map<String, dynamic> dayPlan) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: ExpansionTile(
-        title:
-            Text(dayPlan['day'], style: Theme.of(context).textTheme.titleLarge),
-        children: dayPlan['meals']
-            .map<Widget>((meal) => _buildMealCard(context, meal))
-            .toList(),
-      ),
+  Widget _buildWeeklyMealPlan(
+      BuildContext context, List<Map<String, dynamic>> weeklyMealPlan) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: weeklyMealPlan.map<Widget>((dayPlan) {
+        return Card(
+          margin: EdgeInsets.only(bottom: 16.h),
+          elevation: 4,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              title: Text(
+                dayPlan['day'],
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              children: dayPlan['meals']
+                  .map<Widget>((meal) => ListTile(
+                        title: Text(
+                          meal['meal'],
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(meal['name']),
+                        leading: CircleAvatar(
+                          backgroundColor:
+                              Theme.of(context).primaryColor.withOpacity(0.1),
+                          child: Icon(
+                            _getMealIcon(meal['meal']),
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
-  Widget _buildMealCard(BuildContext context, Map<String, dynamic> meal) {
+  Widget _buildNutritionTips(BuildContext context, List<String> nutritionTips) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${meal['meal']} (${meal['calories']} kcal)',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(fontWeight: FontWeight.bold),
+              'Diet Tips',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              meal['name'],
-              style: Theme.of(context).textTheme.titleSmall,
+            SizedBox(height: 16.h),
+            ...nutritionTips.map(
+              (tip) => Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 12.r,
+                      backgroundColor: Colors.amber,
+                      child: Icon(Icons.lightbulb,
+                          color: Colors.white, size: 16.r),
+                    ),
+                    SizedBox(width: 8.w),
+                    Expanded(child: Text(tip)),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Ingredients:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            ...meal['ingredients']
-                .map((ingredient) => Text('• $ingredient'))
-                .toList(),
-            const SizedBox(height: 8),
-            const Text(
-              'Instructions:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(meal['instructions']),
           ],
         ),
       ),
     );
+  }
+
+  IconData _getMealIcon(String meal) {
+    switch (meal.toLowerCase()) {
+      case 'breakfast':
+        return Icons.breakfast_dining;
+      case 'lunch':
+        return Icons.lunch_dining;
+      case 'dinner':
+        return Icons.dinner_dining;
+      case 'snack':
+        return Icons.apple;
+      default:
+        return Icons.restaurant;
+    }
   }
 }

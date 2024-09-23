@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/features/fitness/common/user_model.dart';
 import 'package:gymapp/features/fitness/diet/diet_recommendation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,8 +41,24 @@ class _DietInputPageState extends State<DietInputPage> {
           child: Form(
             key: _formKey,
             child: ListView(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(15.0),
               children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Spacer(),
+                  ],
+                ),
                 const Text(
                   'Create Your Personalized Plan!',
                   style: TextStyle(
@@ -50,7 +67,7 @@ class _DietInputPageState extends State<DietInputPage> {
                       color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 14),
                 Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16)),
@@ -98,7 +115,7 @@ class _DietInputPageState extends State<DietInputPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 14.h),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.black,

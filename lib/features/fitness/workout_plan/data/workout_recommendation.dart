@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'package:gymapp/features/fitness/workout_plan/data/workout_sample_data.dart';
-import 'package:gymapp/features/fitness/workout_plan/pages/workout_display_page.dart';
+import 'package:gymapp/features/fitness/workout_plan/pages/workout_result_page.dart';
 
 class LogicPage extends StatelessWidget {
   final int age;

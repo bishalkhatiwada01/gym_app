@@ -91,4 +91,21 @@ class WorkoutPlanRepository {
       rethrow;
     }
   }
+
+  Future<Map<String, dynamic>?> getWorkoutPlan(String userId) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('workout_plans')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Return the first workout plan found
+        return querySnapshot.docs.first.data();
+      }
+    } catch (e) {
+      print('Error getting workout plan: $e');
+    }
+    return null;
+  }
 }

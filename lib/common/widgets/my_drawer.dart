@@ -103,7 +103,8 @@ class MyDrawer extends ConsumerWidget {
                         child: userData.profileImageUrl == null
                             ? const CircleAvatar(
                                 radius: 50,
-                                backgroundImage: AssetImage("assets/user.png"),
+                                backgroundImage:
+                                    AssetImage("assets/no_image.jpg"),
                               )
                             : CircleAvatar(
                                 radius: 50,
@@ -112,17 +113,17 @@ class MyDrawer extends ConsumerWidget {
                                 ),
                               ),
                       ),
-                      SizedBox(width: 10.w),
+                      SizedBox(width: 15.w),
                       Expanded(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              userData.username,
+                              userData.name ?? 'No Name',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 25.sp,
+                                fontSize: 24.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -146,6 +147,9 @@ class MyDrawer extends ConsumerWidget {
               loading: () => const Center(
                 child: CircularProgressIndicator(),
               ),
+            ),
+            SizedBox(
+              height: 30.h,
             ),
             Padding(
               padding: EdgeInsets.only(left: 20.w),

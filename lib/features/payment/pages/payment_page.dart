@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gymapp/features/payment/model/user_model.dart';
+import 'package:gymapp/main.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -202,7 +203,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () => _initiatePayment(userData.username),
+                        onPressed: () => payWithKhaltiInApp(19),
                       ),
                     ],
                   );
@@ -221,15 +222,15 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
     );
   }
 
-  void _initiatePayment(String username) {
-    const amount = 1999; // in Paisa
+  void payWithKhaltiInApp(int amount) {
     KhaltiScope.of(context).pay(
       config: PaymentConfig(
-        amount: amount,
-        productIdentity: "User ID $currentUser",
-        productName: "Premium Plans Subscription",
-      ),
-      preferences: [PaymentPreference.khalti],
+          amount: amount * 100,
+          productIdentity: "User ID $currentUser",
+          productName: ""),
+      preferences: [
+        PaymentPreference.khalti,
+      ],
       onSuccess: onSuccess,
       onFailure: onFailure,
       onCancel: onCancel,
@@ -237,53 +238,47 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
   }
 
   void onSuccess(PaymentSuccessModel success) {
-    FirebaseFirestore.instance.collection('subscriptions').add({
+    final firestoreInstance = FirebaseFirestore.instance;
+
+    firestoreInstance.collection('payments').add({
       'userId': currentUser,
-      'amount': success.amount / 100, // converted to Rs
+      'amount': success.amount / 100,
       'transactionId': success.idx,
-      'subscriptionDate': DateTime.now(),
-      'paymentType': 'Khalti',
-    }).then((_) {
-      _showSuccessDialog();
+      'paymentDate': DateTime.now(),
+    }).then((value) {
+      if (kDebugMode) {
+        print("Payment Added");
+      }
     }).catchError((error) {
       if (kDebugMode) {
-        print("Failed to add subscription: $error");
+        print("Failed to add payment: $error");
       }
     });
-  }
 
-  void _showSuccessDialog() {
     showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text("Subscription Successful",
-            style: TextStyle(color: Colors.purple[700])),
-        content: const Text("You now have access to all premium plans!"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: Text("OK", style: TextStyle(color: Colors.purple[700])),
-          ),
-        ],
-      ),
-    );
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Success"),
+            content: const Text("Payment successful"),
+            actions: [
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MainPage()));
+                },
+                child: const Text("OK"),
+              )
+            ],
+          );
+        });
   }
 
   void onFailure(PaymentFailureModel failure) {
-    if (kDebugMode) {
-      print("Payment Failure: ${failure.message}");
-    }
-    // Show error message to user
+    debugPrint("Failure: ${failure.message}");
   }
 
   void onCancel() {
-    if (kDebugMode) {
-      print("Payment Cancelled");
-    }
-    // Show cancellation message to user
+    debugPrint("Cancelled");
   }
 }

@@ -14,11 +14,9 @@ class AuthService {
         email: email,
         password: password,
       );
-      final token = await FirebaseMessaging.instance.getToken();
       final userData = await userDb.doc(userCredential.user!.uid).get();
       await userDb.doc(userCredential.user!.uid).update({
         'email': userData['email'],
-        'token': token,
       });
 
       return userCredential;
@@ -43,13 +41,10 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
-      final token = await FirebaseMessaging.instance.getToken();
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'username': username.trim(),
         'email': email.trim(),
-        'password': password
-            .trim(), // Note: Storing passwords in plaintext is not secure. Consider hashing passwords before storing.
-        'token': token,
+        'password': password.trim(),
       });
     } catch (e) {
       if (kDebugMode) {
