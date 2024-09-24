@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gymapp/common/widgets/common_app_bar.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import 'result_screen.dart';
 import '../widgets/gender_selector.dart';
 
-class InputScreen extends StatefulWidget {
-  const InputScreen({super.key});
+class BmiInputScreen extends StatefulWidget {
+  const BmiInputScreen({super.key});
 
   @override
-  _InputScreenState createState() => _InputScreenState();
+  _BmiInputScreenState createState() => _BmiInputScreenState();
 }
 
-class _InputScreenState extends State<InputScreen> {
+class _BmiInputScreenState extends State<BmiInputScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
@@ -41,6 +42,11 @@ class _InputScreenState extends State<InputScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: CenteredAppBarWithBackButton(
+        title: 'BMI Calculator',
+        onBackPressed: () => Navigator.pop(context),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -61,24 +67,15 @@ class _InputScreenState extends State<InputScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    const SizedBox(height: 20),
-                    const Text(
-                      'BMI Calculator',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Text(
+                    SizedBox(height: 20.sp),
+                    Text(
                       'Enter your details below',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 22.sp,
                       ),
                     ),
-                    SizedBox(height: 40.sp),
                     Card(
                       elevation: 8,
                       shape: RoundedRectangleBorder(

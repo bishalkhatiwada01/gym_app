@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/common/widgets/common_app_bar.dart';
 
 import 'package:gymapp/features/fitness/nutrition/data/nutrition_provider.dart';
@@ -187,6 +186,6 @@ class NutritionPlanDisplayPage extends ConsumerWidget {
 
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
+    return "${this[0].toUpperCase()}${substring(1)}";
   }
 }

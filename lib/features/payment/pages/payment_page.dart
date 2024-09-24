@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gymapp/features/payment/model/user_model.dart';
 import 'package:gymapp/main.dart';
+
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -226,8 +227,8 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
     KhaltiScope.of(context).pay(
       config: PaymentConfig(
           amount: amount * 100,
-          productIdentity: "User ID $currentUser",
-          productName: ""),
+          productIdentity: currentUser,
+          productName: "User Name"),
       preferences: [
         PaymentPreference.khalti,
       ],
@@ -264,7 +265,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
             actions: [
               SimpleDialogOption(
                 onPressed: () {
-                  Navigator.push(context,
+                  Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => MainPage()));
                 },
                 child: const Text("OK"),

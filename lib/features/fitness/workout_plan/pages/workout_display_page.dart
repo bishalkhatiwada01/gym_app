@@ -23,7 +23,7 @@ class WorkoutPlanScreen extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.orange[300]!,
+              Colors.orange[200]!,
               Colors.red[300]!,
             ],
           ),
@@ -55,7 +55,7 @@ class WorkoutPlanScreen extends StatelessWidget {
                           children: [
                             _buildSectionTitle(context, 'User Details'),
                             _buildUserDetailsCard(context, workoutPlan),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             _buildSectionTitle(context, 'Weekly Workout Plan'),
                           ],
                         ),
@@ -99,19 +99,32 @@ class WorkoutPlanScreen extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildDetailRow('Age', '${workoutPlan['age']} years'),
-            _buildDetailRow('Weight', '${workoutPlan['weight']} kg'),
-            _buildDetailRow('Height', '${workoutPlan['height']} cm'),
-            _buildDetailRow('Fitness Level', workoutPlan['fitnessLevel']),
-            _buildDetailRow('Goal', workoutPlan['goal']),
-            _buildDetailRow('Gender', workoutPlan['gender']),
-            _buildDetailRow(
-                'Target Weight', '${workoutPlan['targetWeight']} kg'),
-          ],
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.orange[100]!,
+              Colors.red[50]!,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _buildDetailRow('Age', '${workoutPlan['age']} years'),
+              _buildDetailRow('Weight', '${workoutPlan['weight']} kg'),
+              _buildDetailRow('Height', '${workoutPlan['height']} cm'),
+              _buildDetailRow('Fitness Level', workoutPlan['fitnessLevel']),
+              _buildDetailRow('Goal', workoutPlan['goal']),
+              _buildDetailRow('Gender', workoutPlan['gender']),
+              _buildDetailRow(
+                  'Target Weight', '${workoutPlan['targetWeight']} kg'),
+            ],
+          ),
         ),
       ),
     );
@@ -123,8 +136,10 @@ class WorkoutPlanScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(value),
+          Text(label,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.red[800])),
+          Text(value, style: TextStyle(color: Colors.red[700])),
         ],
       ),
     );
@@ -133,46 +148,89 @@ class WorkoutPlanScreen extends StatelessWidget {
   Widget _buildWorkoutCard(
       BuildContext context, Map<String, dynamic> dailyWorkout) {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          collapsedIconColor: Colors.orange,
-          title: Text('${dailyWorkout['day']}',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          subtitle: Text('Focus Area: ${dailyWorkout['focusArea']}',
-              style: TextStyle(color: Colors.grey[600])),
-          leading: Icon(Icons.fitness_center, color: Colors.orange),
-          children: [
-            Container(
-              padding: EdgeInsets.all(16),
-              color: Colors.grey[100],
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Exercises',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  SizedBox(height: 8),
-                  ...(dailyWorkout['exercises'] as List)
-                      .map((exercise) => Card(
-                            margin: EdgeInsets.symmetric(vertical: 8),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.orange[100]!,
+                Colors.red[50]!,
+              ],
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ExpansionTile(
+            collapsedIconColor: Colors.redAccent,
+            iconColor: Colors.red[500],
+            title: Text('${dailyWorkout['day']}',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.red[800])),
+            subtitle: Text('Focus Area: ${dailyWorkout['focusArea']}',
+                style: TextStyle(color: Colors.red[400])),
+            leading: Icon(Icons.fitness_center, color: Colors.red[400]),
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.orange[50]!,
+                      Colors.red[50]!,
+                    ],
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Exercises',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.red[400])),
+                    const SizedBox(height: 8),
+                    ...(dailyWorkout['exercises'] as List).map((exercise) =>
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.orange[100]!,
+                                  Colors.red[100]!,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                             child: Padding(
-                              padding: EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(12),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(exercise['name'],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          fontSize: 16)),
-                                  SizedBox(height: 4),
+                                          fontSize: 16,
+                                          color: Colors.black)),
+                                  const SizedBox(height: 4),
                                   Text(exercise['instruction'],
                                       style:
-                                          TextStyle(color: Colors.grey[600])),
-                                  SizedBox(height: 8),
+                                          const TextStyle(color: Colors.black)),
+                                  const SizedBox(height: 8),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -188,12 +246,13 @@ class WorkoutPlanScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                          ))
-                      .toList(),
-                ],
+                          ),
+                        )),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -202,9 +261,13 @@ class WorkoutPlanScreen extends StatelessWidget {
   Widget _buildExerciseDetail(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey[600]),
-        SizedBox(width: 4),
-        Text(text, style: TextStyle(color: Colors.grey[600])),
+        Icon(
+          icon,
+          size: 16,
+          color: Colors.black,
+        ),
+        const SizedBox(width: 4),
+        Text(text, style: const TextStyle(color: Colors.black)),
       ],
     );
   }

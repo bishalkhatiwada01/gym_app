@@ -52,6 +52,7 @@ dependencies:
   carousel_slider: ^5.0.0
   printing: ^5.13.1
   khalti_flutter: ^3.0.0
+  flutter_animate: ^4.5.0
 
 dev_dependencies:
   flutter_test:

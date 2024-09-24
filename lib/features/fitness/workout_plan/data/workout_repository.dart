@@ -104,7 +104,9 @@ class WorkoutPlanRepository {
         return querySnapshot.docs.first.data();
       }
     } catch (e) {
-      print('Error getting workout plan: $e');
+      if (kDebugMode) {
+        print('Error getting workout plan: $e');
+      }
     }
     return null;
   }

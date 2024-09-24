@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gymapp/features/fitness/diet/pages/diet_display_page.dart';
 import 'package:gymapp/features/fitness/nutrition/nutrition_display_page.dart';
 import 'package:gymapp/features/fitness/workout_plan/pages/workout_display_page.dart';
 
-// Main widget to handle navigation
 class FitnessPage extends StatefulWidget {
   const FitnessPage({super.key});
 
@@ -49,46 +47,6 @@ class _FitnessPageState extends State<FitnessPage> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.purple[300],
         onTap: _onItemTapped,
-      ),
-    );
-  }
-}
-
-// Workout Plan Page
-class WorkoutPlanPage extends StatelessWidget {
-  const WorkoutPlanPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text('Your Workout Plan',
-            style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.orange[300]!,
-              Colors.red[300]!,
-            ],
-          ),
-        ),
-        child: Center(
-          child: Text(
-            'Workout Plan Content\nComing Soon!',
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium
-                ?.copyWith(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-        ),
       ),
     );
   }

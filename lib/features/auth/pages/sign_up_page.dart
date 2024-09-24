@@ -7,8 +7,6 @@ import 'package:gymapp/features/auth/pages/login_page.dart';
 import 'package:gymapp/features/auth/services/auth_service.dart';
 import 'package:gymapp/features/auth/services/status_page.dart';
 
-import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
-
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
     super.key,

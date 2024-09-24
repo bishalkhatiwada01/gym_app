@@ -47,7 +47,7 @@ class _DietInputPageState extends State<DietInputPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back,
                         size: 30,
                         color: Colors.white,
@@ -56,7 +56,7 @@ class _DietInputPageState extends State<DietInputPage> {
                         Navigator.pop(context);
                       },
                     ),
-                    Spacer(),
+                    const Spacer(),
                   ],
                 ),
                 const Text(

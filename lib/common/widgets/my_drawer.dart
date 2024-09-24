@@ -175,8 +175,7 @@ class MyDrawer extends ConsumerWidget {
                   style: TextStyle(fontSize: 14, letterSpacing: 4),
                 ),
                 onTap: () {
-                  ref.read(selectedIndexProvider.notifier).state =
-                      2; // Assuming ProfilePage is at index 2
+                  ref.read(selectedIndexProvider.notifier).state = 2;
                   Navigator.pop(context);
                 },
               ),
@@ -198,7 +197,7 @@ class MyDrawer extends ConsumerWidget {
                   Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (context) => const InputScreen()),
+                        builder: (context) => const BmiInputScreen()),
                   );
                 },
               ),

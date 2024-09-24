@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gymapp/common/widgets/my_drawer.dart';
-import 'package:gymapp/features/fitness/common/your_plan_page.dart';
+import 'package:gymapp/features/fitness/common/fitness_page.dart';
 import 'package:gymapp/features/fitness/diet/pages/diet_input_page.dart';
 
 class CombinedPage extends ConsumerStatefulWidget {

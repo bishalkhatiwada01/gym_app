@@ -18,22 +18,28 @@ class DietDisplayPage extends ConsumerWidget {
         onBackPressed: () => Navigator.pop(context),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.blue[300]!,
-              Colors.purple[300]!,
+              Color(0xFF6DD5FA),
+              Color(0xFFFF758C),
             ],
           ),
         ),
         child: dietPlanAsyncValue.when(
           data: (dietPlan) {
             if (dietPlan == null) {
-              return const Center(
-                  child: Text('No diet plan found.',
-                      style: TextStyle(color: Colors.white)));
+              return Center(
+                child: Text(
+                  'No diet plan found.',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              );
             }
             final weeklyMealPlan = dietPlan.weeklyMealPlan;
             final nutritionTips = dietPlan.nutritionTips;
@@ -46,16 +52,48 @@ class DietDisplayPage extends ConsumerWidget {
                 children: [
                   _buildWeeklyMealPlan(context, weeklyMealPlan),
                   SizedBox(height: 24.h),
+                  _buildHeader('Nutrition Tips'),
+                  SizedBox(height: 16.h),
                   _buildNutritionTips(context, nutritionTips),
                 ],
               ),
             );
           },
           loading: () => const Center(
-              child: CircularProgressIndicator(color: Colors.white)),
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ),
           error: (error, stack) => Center(
-              child: Text('Error: $error',
-                  style: const TextStyle(color: Colors.white))),
+            child: Text(
+              'Error: $error',
+              style: TextStyle(color: Colors.white, fontSize: 18.sp),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 24.sp,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          shadows: [
+            Shadow(
+                offset: const Offset(1, 1),
+                blurRadius: 3,
+                color: Colors.black.withOpacity(0.3))
+          ],
         ),
       ),
     );
@@ -63,37 +101,61 @@ class DietDisplayPage extends ConsumerWidget {
 
   Widget _buildWeeklyMealPlan(
       BuildContext context, List<Map<String, dynamic>> weeklyMealPlan) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: weeklyMealPlan.map<Widget>((dayPlan) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: weeklyMealPlan.length,
+      itemBuilder: (context, index) {
+        final dayPlan = weeklyMealPlan[index];
         return Card(
           margin: EdgeInsets.only(bottom: 16.h),
           elevation: 4,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          color: Colors.white.withOpacity(0.9),
           child: Theme(
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               title: Text(
                 dayPlan['day'],
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF333333),
+                ),
               ),
               children: dayPlan['meals']
                   .map<Widget>((meal) => ListTile(
                         title: Text(
                           meal['meal'],
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF444444),
+                              fontSize: 18.sp),
                         ),
-                        subtitle: Text(meal['name']),
-                        leading: CircleAvatar(
-                          backgroundColor:
-                              Theme.of(context).primaryColor.withOpacity(0.1),
+                        subtitle: Text(
+                          meal['name'],
+                          style: TextStyle(
+                              color: const Color(0xFF666666), fontSize: 16.sp),
+                        ),
+                        leading: Container(
+                          padding: EdgeInsets.all(8.r),
+                          decoration: BoxDecoration(
+                            color: _getMealColor(meal['meal']),
+                            borderRadius: BorderRadius.circular(12.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: _getMealColor(meal['meal'])
+                                    .withOpacity(0.5),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
                           child: Icon(
                             _getMealIcon(meal['meal']),
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.white,
+                            size: 24.r,
                           ),
                         ),
                       ))
@@ -101,40 +163,52 @@ class DietDisplayPage extends ConsumerWidget {
             ),
           ),
         );
-      }).toList(),
+      },
     );
   }
 
   Widget _buildNutritionTips(BuildContext context, List<String> nutritionTips) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.white.withOpacity(0.9),
       child: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Diet Tips',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            SizedBox(height: 16.h),
             ...nutritionTips.map(
               (tip) => Padding(
-                padding: EdgeInsets.only(bottom: 8.h),
+                padding: EdgeInsets.only(bottom: 16.h),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 12.r,
-                      backgroundColor: Colors.amber,
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: _getRandomColor(),
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
                       child: Icon(Icons.lightbulb,
-                          color: Colors.white, size: 16.r),
+                          color: Colors.white, size: 24.r),
                     ),
-                    SizedBox(width: 8.w),
-                    Expanded(child: Text(tip)),
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: Text(
+                        tip,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: const Color(0xFF333333),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -158,5 +232,31 @@ class DietDisplayPage extends ConsumerWidget {
       default:
         return Icons.restaurant;
     }
+  }
+
+  Color _getMealColor(String meal) {
+    switch (meal.toLowerCase()) {
+      case 'breakfast':
+        return const Color(0xFF3498DB);
+      case 'lunch':
+        return const Color(0xFF2ECC71);
+      case 'dinner':
+        return const Color(0xFFE74C3C);
+      case 'snack':
+        return const Color(0xFFF39C12);
+      default:
+        return const Color(0xFF9B59B6);
+    }
+  }
+
+  Color _getRandomColor() {
+    final colors = [
+      const Color(0xFFFF6B6B),
+      const Color(0xFF4ECDC4),
+      const Color(0xFFFFD93D),
+      const Color(0xFF6A0572),
+      const Color(0xFF4CB8C4),
+    ];
+    return colors[DateTime.now().microsecond % colors.length];
   }
 }

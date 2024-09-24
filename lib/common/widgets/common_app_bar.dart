@@ -7,10 +7,10 @@ class CenteredAppBarWithBackButton extends StatelessWidget
   final VoidCallback onBackPressed;
 
   const CenteredAppBarWithBackButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.onBackPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,5 +49,5 @@ class CenteredAppBarWithBackButton extends StatelessWidget
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
